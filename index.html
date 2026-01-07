@@ -177,6 +177,17 @@ function generatePDF() {
     "\n✅ Mode: " + mode.value +
     "\n✅ File selected\n\nNext step: Crop logic"
   );
+  // ---- CROP LOGIC START (MEESHO + A4) ----
+if (company.value === "meesho" && mode.value === "a4") {
+  alert(
+    "🧠 Crop Logic Active\n\n" +
+    "Company: Meesho\n" +
+    "Mode: A4 (4 labels)\n\n" +
+    "अब अगला काम:\n" +
+    "PDF से label काटना"
+  );
+}
+// ---- CROP LOGIC END ----
 }
 </script>
 </body>
