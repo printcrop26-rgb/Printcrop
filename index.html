@@ -5,39 +5,132 @@
   <title>Printcrop | Official Website</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
-    }
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-    }
-    p {
-      font-size: 1.1rem;
-      opacity: 0.9;
-    }
-    .box {
-      padding: 30px;
-      border: 2px solid #38bdf8;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.05);
-    }
+    * {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.app {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.title {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.8;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid #38bdf8;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.card h2 {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.radio {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.radio input {
+  accent-color: #38bdf8;
+}
+
+.file-input {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 120px;
+  border-radius: 8px;
+  border: none;
+  padding: 10px;
+  font-size: 13px;
+}
+
+.or {
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.6;
+  margin: 8px 0;
+}
+
+.primary-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  background: #38bdf8;
+  color: #000;
+  font-weight: bold;
+  font-size: 16px;
+}
   </style>
 </head>
 <body>
-  <div class="box">
-    <h1>🚀 Printcrop</h1>
-    <p>Official website is coming soon</p>
-    <p>We are building something powerful.</p>
-    
+<div class="app">
+
+  <h1 class="title">🖨️ Printcrop</h1>
+  <p class="subtitle">Smart Shipping Label Tool</p>
+
+  <div class="card">
+    <h2>1️⃣ Select Print Mode</h2>
+
+    <label class="radio">
+      <input type="radio" name="mode">
+      <span>A4 Paper (4 Labels per page)</span>
+    </label>
+
+    <label class="radio">
+      <input type="radio" name="mode">
+      <span>Label Printer (Thermal)</span>
+    </label>
   </div>
+
+  <div class="card">
+    <h2>2️⃣ Upload or Paste Label PDF</h2>
+
+    <input type="file" class="file-input">
+
+    <p class="or">OR</p>
+
+    <textarea class="textarea"
+      placeholder="Paste Meesho / Flipkart label text here">
+    </textarea>
+  </div>
+
+  <div class="card">
+    <button class="primary-btn" disabled>
+      Generate & Download PDF
+    </button>
+  </div>
+
+</div>
 </body>
 </html>
