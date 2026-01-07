@@ -144,11 +144,40 @@ body {
   </div>
 
   <div class="card">
-    <button class="primary-btn" disabled>
-      Generate & Download PDF
-    </button>
+    <button class="primary-btn" onclick="generatePDF()">
+  Generate & Download PDF
+</button>
   </div>
 
 </div>
+  <script>
+function generatePDF() {
+
+  const company = document.querySelector('input[name="company"]:checked');
+  const mode = document.querySelector('input[name="mode"]:checked');
+  const fileInput = document.querySelector('.file-input');
+
+  if (!company) {
+    alert("❌ Company select karo (Meesho / Amazon / Flipkart)");
+    return;
+  }
+
+  if (!mode) {
+    alert("❌ Print mode select karo (A4 / Label Printer)");
+    return;
+  }
+
+  if (!fileInput.files.length) {
+    alert("❌ PDF file upload karo");
+    return;
+  }
+
+  alert(
+    "✅ Company: " + company.value +
+    "\n✅ Mode: " + mode.value +
+    "\n✅ File selected\n\nNext step: Crop logic"
+  );
+}
+</script>
 </body>
 </html>
