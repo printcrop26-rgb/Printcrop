@@ -2,283 +2,205 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-<title>Free Label Cropper – Meesho | Amazon | Flipkart</title>
-
-<!-- ICONS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<title>Printcrop – Free Label Tool</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <!-- PDF LIB -->
 <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 
 <style>
-:root{
-  --primary:#2563eb;
-  --dark:#0f172a;
-  --light:#f8fafc;
-  --card:#ffffff;
-}
-
-*{box-sizing:border-box;font-family:Inter,system-ui;}
-
 body{
   margin:0;
-  background:linear-gradient(120deg,#e0e7ff,#f8fafc);
-  color:#0f172a;
+  font-family:Inter,Arial,sans-serif;
+  background:#0f172a;
+  color:#fff;
 }
-
-header{
-  padding:30px 20px;
-  text-align:center;
-}
-
-header h1{
-  font-size:2.2rem;
-  margin-bottom:8px;
-}
-
-header p{
-  color:#475569;
-  font-size:1rem;
-}
-
-.badge{
-  display:inline-block;
-  background:#22c55e;
-  color:white;
-  padding:6px 14px;
-  border-radius:999px;
-  font-weight:600;
-  margin-top:10px;
-}
-
 .container{
   max-width:900px;
   margin:auto;
   padding:20px;
 }
-
-.card{
-  background:var(--card);
-  border-radius:16px;
-  padding:22px;
-  margin-bottom:20px;
-  box-shadow:0 20px 40px rgba(0,0,0,.08);
-}
-
-h2{
-  margin:0 0 14px;
-}
-
-.platforms{
-  display:flex;
-  gap:20px;
-}
-
-.platform{
-  flex:1;
-  border:2px solid #e5e7eb;
-  padding:16px;
-  border-radius:14px;
-  cursor:pointer;
+h1{
   text-align:center;
-  transition:.2s;
+  font-size:28px;
+  margin-bottom:5px;
+}
+.tagline{
+  text-align:center;
+  opacity:.8;
+  margin-bottom:20px;
+}
+.card{
+  background:#111827;
+  border-radius:12px;
+  padding:16px;
+  margin-bottom:16px;
+}
+.brand-row{
+  display:flex;
+  gap:15px;
+  justify-content:center;
+}
+.brand{
+  padding:10px 18px;
+  border-radius:8px;
+  cursor:pointer;
+  border:2px solid transparent;
+  font-weight:600;
+}
+.brand input{display:none;}
+.brand.meesho{background:#f43397;}
+.brand.amazon{background:#ff9900;color:#000;}
+.brand.flipkart{background:#2874f0;}
+.brand input:checked + span{
+  border-bottom:3px solid #fff;
 }
 
-.platform input{display:none}
-
-.platform i{
-  font-size:2.2rem;
-  margin-bottom:8px;
-}
-
-.meesho{color:#ec4899}
-.amazon{color:#ff9900}
-.flipkart{color:#2563eb}
-
-.platform.active{
-  border-color:var(--primary);
-  background:#eef2ff;
-}
-
-.modes{
+.option{
   display:flex;
   gap:20px;
 }
-
-.mode{
-  flex:1;
-  border:2px solid #e5e7eb;
-  padding:16px;
-  border-radius:14px;
+.option label{
   cursor:pointer;
-  transition:.2s;
-}
-
-.mode input{display:none}
-
-.mode.active{
-  border-color:#22c55e;
-  background:#f0fdf4;
 }
 
 input[type=file]{
   width:100%;
-  padding:12px;
+  padding:10px;
+  background:#020617;
+  color:#fff;
+  border-radius:8px;
 }
 
 button{
   width:100%;
-  padding:16px;
-  font-size:1.1rem;
-  background:var(--primary);
-  color:white;
+  padding:14px;
+  font-size:16px;
   border:none;
-  border-radius:14px;
+  border-radius:10px;
+  background:#22c55e;
+  color:#000;
+  font-weight:700;
   cursor:pointer;
 }
-
 button:hover{opacity:.9}
 
-footer{
+.footer{
   text-align:center;
-  padding:20px;
-  color:#64748b;
+  font-size:13px;
+  opacity:.7;
 }
 </style>
 </head>
 
 <body>
-
-<header>
-  <h1>Free Label Cropper</h1>
-  <p>Perfect A4 & Label Printer Crop for Meesho, Amazon & Flipkart</p>
-  <span class="badge">100% FREE • No Login • No Watermark</span>
-</header>
-
 <div class="container">
 
-<!-- PLATFORM -->
+<h1>Printcrop</h1>
+<div class="tagline">Free A4 & Label Printer PDF Tool</div>
+
 <div class="card">
-<h2>Select Platform</h2>
-<div class="platforms">
-<label class="platform meesho">
-<input type="radio" name="platform" value="meesho">
-<i class="fa-solid fa-bag-shopping"></i>
-<div>Meesho</div>
-</label>
-
-<label class="platform amazon">
-<input type="radio" name="platform" value="amazon">
-<i class="fa-brands fa-amazon"></i>
-<div>Amazon</div>
-</label>
-
-<label class="platform flipkart">
-<input type="radio" name="platform" value="flipkart">
-<i class="fa-solid fa-cart-shopping"></i>
-<div>Flipkart</div>
-</label>
-</div>
+  <h3>Select Company</h3>
+  <div class="brand-row">
+    <label class="brand meesho">
+      <input type="radio" name="company" value="meesho">
+      <span>Meesho</span>
+    </label>
+    <label class="brand amazon">
+      <input type="radio" name="company" value="amazon">
+      <span>Amazon</span>
+    </label>
+    <label class="brand flipkart">
+      <input type="radio" name="company" value="flipkart">
+      <span>Flipkart</span>
+    </label>
+  </div>
 </div>
 
-<!-- MODE -->
 <div class="card">
-<h2>Print Mode</h2>
-<div class="modes">
-<label class="mode">
-<input type="radio" name="mode" value="a4">
-📄 A4 Sheet (Auto Grid)
-</label>
-
-<label class="mode">
-<input type="radio" name="mode" value="thermal">
-🖨️ Label Printer (4×6)
-</label>
-</div>
+  <h3>Select Print Mode</h3>
+  <div class="option">
+    <label><input type="radio" name="mode" value="a4"> A4 (4 labels max)</label>
+    <label><input type="radio" name="mode" value="thermal"> Label Printer (4×6)</label>
+  </div>
 </div>
 
-<!-- FILE -->
 <div class="card">
-<h2>Upload Label PDF</h2>
-<input type="file" id="pdfFile" accept="application/pdf">
+  <h3>Upload Label PDF</h3>
+  <input type="file" id="pdfFile" accept="application/pdf">
 </div>
 
-<!-- BUTTON -->
-<div class="card">
-<button type="button" id="generateBtn">
-Generate & Download PDF
-</button>
+<button type="button" onclick="generatePDF()">Generate & Download PDF</button>
+
+<div class="footer">
+  100% Free • No Login • No Data Saved
 </div>
 
 </div>
-
-<footer>
-©️ Free Label Cropper • Built for Indian Sellers 🇮🇳
-</footer>
 
 <script>
-const platforms=document.querySelectorAll('.platform');
-const modes=document.querySelectorAll('.mode');
+async function generatePDF(){
+  const company = document.querySelector('input[name="company"]:checked');
+  const mode = document.querySelector('input[name="mode"]:checked');
+  const fileInput = document.getElementById("pdfFile");
 
-platforms.forEach(p=>{
-  p.onclick=()=>{
-    platforms.forEach(x=>x.classList.remove('active'));
-    p.classList.add('active');
-    p.querySelector('input').checked=true;
-  }
-});
+  if(!company || !mode || !fileInput.files.length) return;
 
-modes.forEach(m=>{
-  m.onclick=()=>{
-    modes.forEach(x=>x.classList.remove('active'));
-    m.classList.add('active');
-    m.querySelector('input').checked=true;
-  }
-});
+  const bytes = await fileInput.files[0].arrayBuffer();
+  const src = await PDFLib.PDFDocument.load(bytes);
+  const out = await PDFLib.PDFDocument.create();
 
-document.getElementById('generateBtn').onclick=async()=>{
-  const platform=document.querySelector('input[name=platform]:checked')?.value;
-  const mode=document.querySelector('input[name=mode]:checked')?.value;
-  const file=document.getElementById('pdfFile').files[0];
+  const total = src.getPageCount();
 
-  if(!platform||!mode||!file) return;
-
-  const bytes=await file.arrayBuffer();
-  const src=await PDFLib.PDFDocument.load(bytes);
-  const out=await PDFLib.PDFDocument.create();
-
-  if(mode==="a4"){
-    let slot=0,page;
-    for(let i=0;i<src.getPageCount();i++){
-      if(slot%4===0)
-        page=out.addPage([595,842]);
-
-      const [p]=await out.copyPages(src,[i]);
-      const x=(slot%2)*297.5;
-      const y=slot%4<2?421:0;
-
-      page.drawPage(p,{x,y,width:297.5,height:421});
-      slot++;
-    }
-  }
-
-  if(mode==="thermal"){
-    for(let i=0;i<src.getPageCount();i++){
-      const page=out.addPage([288,432]);
-      const [p]=await out.copyPages(src,[i]);
+  if(mode.value==="thermal"){
+    for(let i=0;i<total;i++){
+      const page = out.addPage([288,432]);
+      const [p] = await out.copyPages(src,[i]);
       page.drawPage(p,{x:0,y:0,width:288,height:432});
     }
   }
 
-  const pdf=await out.save();
-  const blob=new Blob([pdf],{type:"application/pdf"});
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);
-  a.download="labels-ready.pdf";
+  if(mode.value==="a4"){
+    let index=0;
+    while(index<total){
+      const page = out.addPage([595,842]);
+      const remain = total-index;
+      const count = Math.min(remain,4);
+
+      let pos=[];
+      if(count===1) pos=[{x:149,y:210,w:297,h:421}];
+      if(count===2) pos=[
+        {x:0,y:210,w:297.5,h:421},
+        {x:297.5,y:210,w:297.5,h:421}
+      ];
+      if(count===3) pos=[
+        {x:0,y:421,w:297.5,h:421},
+        {x:297.5,y:421,w:297.5,h:421},
+        {x:149,y:0,w:297,h:421}
+      ];
+      if(count===4) pos=[
+        {x:0,y:421,w:297.5,h:421},
+        {x:297.5,y:421,w:297.5,h:421},
+        {x:0,y:0,w:297.5,h:421},
+        {x:297.5,y:0,w:297.5,h:421}
+      ];
+
+      for(let i=0;i<count;i++){
+        const [p]=await out.copyPages(src,[index]);
+        page.drawPage(p,pos[i]);
+        index++;
+      }
+    }
+  }
+
+  const finalPDF = await out.save();
+  const blob = new Blob([finalPDF],{type:"application/pdf"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href=url;
+  a.download="printcrop_output.pdf";
   a.click();
-};
+}
 </script>
 
 </body>
