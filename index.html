@@ -244,14 +244,54 @@ reader.readAsArrayBuffer(file);
 }
   // ---- CROP LOGIC START (MEESHO + A4) ----
 if (company.value === "meesho" && mode.value === "a4") {
-  alert(
-    "🧠 Crop Logic Active\n\n" +
-    "Company: Meesho\n" +
-    "Mode: A4 (4 labels)\n\n" +
-    "अब अगला काम:\n" +
-    "PDF से label काटना"
-  );
+  
   console.log("MEESHO A4 LOGIC START");
+  const existingPdfBytes = await file.arrayBuffer();
+const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+
+// A4 page size in points
+const A4_WIDTH = 595;
+const A4_HEIGHT = 842;
+
+// Create new PDF
+const newPdf = await PDFLib.PDFDocument.create();
+
+// Label size (4 labels per page)
+const LABEL_WIDTH = A4_WIDTH / 2;
+const LABEL_HEIGHT = A4_HEIGHT / 2;
+
+const pages = pdfDoc.getPages();
+
+for (let i = 0; i < pages.length; i++) {
+  const srcPage = pages[i];
+
+  for (let row = 0; row < 2; row++) {
+    for (let col = 0; col < 2; col++) {
+      const [embeddedPage] = await newPdf.embedPages([srcPage], [{
+        x: col * LABEL_WIDTH,
+        y: A4_HEIGHT - (row + 1) * LABEL_HEIGHT,
+        width: LABEL_WIDTH,
+        height: LABEL_HEIGHT,
+      }]);
+
+      const page = newPdf.addPage([LABEL_WIDTH, LABEL_HEIGHT]);
+      page.drawPage(embeddedPage, {
+        x: 0,
+        y: 0,
+        width: LABEL_WIDTH,
+        height: LABEL_HEIGHT,
+      });
+    }
+  }
+}
+
+// Download
+const pdfBytes = await newPdf.save();
+const blob = new Blob([pdfBytes], { type: "application/pdf" });
+const link = document.createElement("a");
+link.href = URL.createObjectURL(blob);
+link.download = "meesho-a4-4-labels.pdf";
+link.click();
 }
 // ---- CROP LOGIC END ----
 }
