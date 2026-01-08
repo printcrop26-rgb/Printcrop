@@ -199,6 +199,48 @@ if (company.value === "meesho" && mode.value === "thermal") {
 
   console.log("Thermal label size:", LABEL_WIDTH, LABEL_HEIGHT);
 
+ // ===== REAL THERMAL PDF PROCESS START =====
+
+const file = fileInput.files[0];
+const reader = new FileReader();
+
+reader.onload = async function () {
+  const existingPdfBytes = reader.result;
+
+  const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+  const newPdf = await PDFLib.PDFDocument.create();
+
+  const pages = pdfDoc.getPages();
+
+  for (let i = 0; i < pages.length; i++) {
+    const page = pages[i];
+    const { width, height } = page.getSize();
+
+    const newPage = newPdf.addPage([LABEL_WIDTH, LABEL_HEIGHT]);
+
+    const embeddedPage = await newPdf.embedPage(page);
+
+    newPage.drawPage(embeddedPage, {
+      x: 0,
+      y: 0,
+      width: LABEL_WIDTH,
+      height: LABEL_HEIGHT,
+    });
+  }
+
+  const pdfBytes = await newPdf.save();
+  const blob = new Blob([pdfBytes], { type: "application/pdf" });
+
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "meesho-thermal-label.pdf";
+  link.click();
+};
+
+reader.readAsArrayBuffer(file);
+
+// ===== REAL THERMAL PDF PROCESS END ===== 
+
 }
   // ---- CROP LOGIC START (MEESHO + A4) ----
 if (company.value === "meesho" && mode.value === "a4") {
