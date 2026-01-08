@@ -1,108 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <title>PrintCrop – Free Label Tool</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- PDF.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-:root{
-  --bg:#0f172a;
-  --card:#111827;
-  --primary:#38bdf8;
-  --text:#e5e7eb;
-}
-*{box-sizing:border-box}
 body{
   margin:0;
-  background:var(--bg);
-  color:var(--text);
   font-family:system-ui,Arial;
+  background:#0f172a;
+  color:#e5e7eb;
 }
 .container{
   max-width:480px;
   margin:auto;
   padding:16px;
 }
-.header{
+h1{
   text-align:center;
-  margin-bottom:16px;
+  margin:6px 0;
 }
-.header h1{
-  margin:0;
-  font-size:22px;
-}
-.badge{
-  background:#16a34a;
-  color:#fff;
-  padding:4px 10px;
-  border-radius:20px;
-  font-size:12px;
-  display:inline-block;
-  margin-top:6px;
+.free{
+  text-align:center;
+  color:#22c55e;
+  font-size:14px;
+  margin-bottom:14px;
 }
 .card{
-  background:var(--card);
+  background:#111827;
   border-radius:14px;
   padding:16px;
   margin-bottom:14px;
 }
 h2{
-  font-size:16px;
+  font-size:15px;
   margin:0 0 10px;
 }
+.options label{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px;
+  border-radius:8px;
+  cursor:pointer;
+}
+.options input{margin-right:6px}
+.meesho{color:#ff3f6c}
+.amazon{color:#ff9900}
+.flipkart{color:#2874f0}
+
 input[type=file]{
   width:100%;
-  background:#020617;
-  color:#fff;
   padding:10px;
   border-radius:8px;
+  background:#020617;
+  color:#fff;
 }
 button{
   width:100%;
   padding:14px;
   font-size:16px;
-  background:var(--primary);
-  color:#000;
   border:none;
   border-radius:10px;
-  cursor:pointer;
+  background:#38bdf8;
+  color:#000;
   font-weight:600;
-}
-button:active{transform:scale(.98)}
-
-#printArea{
-  display:none;
-}
-
-/* A4 page */
-.a4{
-  width:210mm;
-  height:297mm;
-  page-break-after:always;
-  padding:8mm;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  grid-template-rows:1fr 1fr;
-  gap:6mm;
-}
-.label{
-  border:1px solid #000;
-  overflow:hidden;
-}
-.label canvas{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-}
-
-@media print{
-  body *{visibility:hidden}
-  #printArea, #printArea *{visibility:visible}
-  #printArea{position:absolute;left:0;top:0}
 }
 </style>
 </head>
@@ -110,71 +76,78 @@ button:active{transform:scale(.98)}
 <body>
 <div class="container">
 
-  <div class="header">
-    <h1>PrintCrop</h1>
-    <div class="badge">100% Free • No Login</div>
-  </div>
+<h1>PrintCrop</h1>
+<div class="free">100% Free • No Login Required</div>
 
-  <div class="card">
-    <h2>Upload Label PDF (Meesho / Amazon / Flipkart)</h2>
-    <input type="file" id="pdfInput" accept="application/pdf" />
-  </div>
+<div class="card">
+<h2>Select Company</h2>
+<div class="options">
+<label class="meesho">
+<input type="radio" name="company" value="meesho" checked> Meesho
+</label>
+<label class="amazon">
+<input type="radio" name="company" value="amazon"> Amazon
+</label>
+<label class="flipkart">
+<input type="radio" name="company" value="flipkart"> Flipkart
+</label>
+</div>
+</div>
 
-  <div class="card">
-    <button type="button" onclick="processPDF()">Generate A4 Print</button>
-  </div>
+<div class="card">
+<h2>Print Mode</h2>
+<label><input type="radio" name="mode" value="a4" checked> A4 (4 labels/page)</label><br>
+<label><input type="radio" name="mode" value="thermal"> Thermal (4×6)</label>
+</div>
+
+<div class="card">
+<h2>Upload Label PDF</h2>
+<input type="file" id="pdfInput" accept="application/pdf">
+</div>
+
+<div class="card">
+<button type="button" onclick="generatePDF()">Download Cropped PDF</button>
+</div>
 
 </div>
 
-<div id="printArea"></div>
-
 <script>
-async function processPDF(){
-  const fileInput = document.getElementById('pdfInput');
+async function generatePDF(){
+  const fileInput=document.getElementById("pdfInput");
   if(!fileInput.files.length){
     alert("PDF upload karo");
     return;
   }
 
-  const file = fileInput.files[0];
-  const arrayBuffer = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({data:arrayBuffer}).promise;
+  const pdfData=await fileInput.files[0].arrayBuffer();
+  const pdf=await pdfjsLib.getDocument({data:pdfData}).promise;
 
-  const printArea = document.getElementById('printArea');
-  printArea.innerHTML = "";
+  const { jsPDF } = window.jspdf;
+  const out=new jsPDF("p","mm","a4");
 
-  let pageIndex = 0;
+  let index=0;
+  while(index<pdf.numPages){
+    let positions=[
+      [0,0],[105,0],[0,148.5],[105,148.5]
+    ];
 
-  while(pageIndex < pdf.numPages){
-    const a4 = document.createElement("div");
-    a4.className = "a4";
+    for(let i=0;i<4 && index<pdf.numPages;i++){
+      const page=await pdf.getPage(index+1);
+      const vp=page.getViewport({scale:2});
+      const canvas=document.createElement("canvas");
+      canvas.width=vp.width;
+      canvas.height=vp.height;
+      await page.render({canvasContext:canvas.getContext("2d"),viewport:vp}).promise;
 
-    for(let slot=0; slot<4 && pageIndex<pdf.numPages; slot++){
-      const page = await pdf.getPage(pageIndex+1);
+      const img=canvas.toDataURL("image/jpeg",1.0);
+      out.addImage(img,"JPEG",positions[i][0],positions[i][1],105,148.5);
 
-      const viewport = page.getViewport({scale:2});
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-
-      await page.render({canvasContext:ctx, viewport}).promise;
-
-      const label = document.createElement("div");
-      label.className = "label";
-      label.appendChild(canvas);
-      a4.appendChild(label);
-
-      pageIndex++;
+      index++;
     }
-
-    printArea.appendChild(a4);
+    if(index<pdf.numPages) out.addPage();
   }
 
-  document.body.style.background = "#fff";
-  printArea.style.display = "block";
-
-  setTimeout(()=>window.print(),300);
+  out.save("printcrop_labels.pdf");
 }
 </script>
 </body>
