@@ -1,342 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Printcrop | Official Website</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    * {
-  box-sizing: border-box;
-}
+<meta charset="UTF-8">
+<title>Printcrop — A4 Label Tool</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: #ffffff;
-}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 
-.app {
-  max-width: 420px;
-  margin: 0 auto;
-  padding: 20px;
+<style>
+body{
+  margin:0; padding:20px; background:#0f172a; color:#fff;
+  font-family:system-ui,-apple-system,Arial,sans-serif;
 }
-
-.title {
-  text-align: center;
-  font-size: 28px;
-  margin-bottom: 6px;
+.card{
+  border:2px solid #38bdf8; border-radius:12px;
+  padding:16px; margin-bottom:16px;
 }
-
-.subtitle {
-  text-align: center;
-  font-size: 14px;
-  opacity: 0.8;
-  margin-bottom: 20px;
+h2{margin:0 0 10px}
+label{display:block; margin-bottom:8px}
+.primary-btn{
+  width:100%; padding:14px; font-size:16px;
+  background:#38bdf8; color:#000; border:none;
+  border-radius:10px; cursor:pointer;
 }
-
-.card {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid #38bdf8;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 16px;
-}
-
-.card h2 {
-  font-size: 16px;
-  margin-bottom: 12px;
-}
-
-.radio {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-  cursor: pointer;
-}
-
-.radio input {
-  accent-color: #38bdf8;
-}
-
-.file-input {
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.textarea {
-  width: 100%;
-  min-height: 120px;
-  border-radius: 8px;
-  border: none;
-  padding: 10px;
-  font-size: 13px;
-}
-
-.or {
-  text-align: center;
-  font-size: 12px;
-  opacity: 0.6;
-  margin: 8px 0;
-}
-
-.primary-btn {
-  width: 100%;
-  padding: 14px;
-  border-radius: 10px;
-  border: none;
-  background: #38bdf8;
-  color: #000;
-  font-weight: bold;
-  font-size: 16px;
-}
-  </style>
-  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+.primary-btn:disabled{opacity:.6; cursor:not-allowed}
+small{opacity:.7}
+</style>
 </head>
+
 <body>
-<div class="app">
-  <h1 class="title">🖨️ Printcrop</h1>
-  <p class="subtitle">Smart Shipping Label Tool</p>
+
 <div class="card">
-  <h2>0️⃣ Select Company</h2>
-
-  <label class="radio">
-    <input type="radio" name="company" value="meesho">
-    <span>Meesho</span>
-  </label>
-
-  <label class="radio">
-    <input type="radio" name="company" value="amazon">
-    <span>Amazon</span>
-  </label>
-
-  <label class="radio">
-    <input type="radio" name="company" value="flipkart">
-    <span>Flipkart</span>
-  </label>
+  <h2>Select Company</h2>
+  <label><input type="radio" name="company" value="meesho" checked> Meesho</label>
+  <label><input type="radio" name="company" value="amazon"> Amazon</label>
+  <label><input type="radio" name="company" value="flipkart"> Flipkart</label>
 </div>
-  
 
-  <div class="card">
-    <h2>1️⃣ Select Print Mode</h2>
+<div class="card">
+  <h2>Select Mode</h2>
+  <label><input type="radio" name="mode" value="a4" checked> A4 (Auto fit)</label>
+  <label><input type="radio" name="mode" value="thermal"> Thermal (ignored for now)</label>
+  <small>Note: A4 auto-fit is enabled. No manual settings.</small>
+</div>
 
-    <label class="radio">
-      <input type="radio" name="mode"
-      value="a4">
-      <span>A4 Paper (4 Labels per page)</span>
-    </label>
+<div class="card">
+  <h2>Upload Label PDF</h2>
+  <input type="file" id="pdfFile" accept="application/pdf">
+</div>
 
-    <label class="radio">
-      <input type="radio" name="mode"
-      value="thermal">
-      <span>Label Printer (Thermal)</span>
-    </label>
-  </div>
+<div class="card">
+  <button id="genBtn" class="primary-btn" type="button">
+    Generate & Download A4 PDF
+  </button>
+</div>
 
-  <div class="card">
-    <h2>2️⃣ Upload or Paste Label PDF</h2>
+<script>
+(function(){
+  const btn = document.getElementById('genBtn');
+  const fileInput = document.getElementById('pdfFile');
 
-    <input type="file" class="file-input">
+  // Silent-safe click handler
+  btn.addEventListener('click', async () => {
+    try{
+      if(!fileInput.files || !fileInput.files.length) return;
 
-    <p class="or">OR</p>
+      btn.disabled = true;
 
-    <textarea class="textarea"
-      placeholder="Paste Meesho / Flipkart label text here">
-    </textarea>
-  </div>
+      const bytes = await fileInput.files[0].arrayBuffer();
+      const src = await PDFLib.PDFDocument.load(bytes);
+      const out = await PDFLib.PDFDocument.create();
 
-  <div class="card">
-   <button class="primary-btn" type="button" onclick="generatePDF()">
-  Generate & Download PDF
-</button> 
-  </div>
+      // A4 size (points)
+      const A4_W = 595, A4_H = 842;
+      const CELL_W = A4_W / 2, CELL_H = A4_H / 2;
 
-  <script>
-async function generatePDF() {
-  alert("BUTTON CLICK WORKING");
-alert("generatePDF function called");
-  const company = document.querySelector('input[name="company"]:checked');
-  const mode = document.querySelector('input[name="mode"]:checked');
-  const fileInput = document.querySelector('.file-input');
+      const pages = src.getPages();
 
-  if (!company) {
-    alert("❌ Company select karo (Meesho / Amazon / Flipkart)");
-    return;
-  }
+      // Auto-fit: 4 labels per A4 page
+      for(let i=0;i<pages.length;i++){
+        const a4 = out.addPage([A4_W, A4_H]);
+        const emb = await out.embedPage(pages[i]);
 
-  if (!mode) {
-    alert("❌ Print mode select karo (A4 / Label Printer)");
-    return;
-  }
+        a4.drawPage(emb,{x:0,y:CELL_H,width:CELL_W,height:CELL_H});
+        a4.drawPage(emb,{x:CELL_W,y:CELL_H,width:CELL_W,height:CELL_H});
+        a4.drawPage(emb,{x:0,y:0,width:CELL_W,height:CELL_H});
+        a4.drawPage(emb,{x:CELL_W,y:0,width:CELL_W,height:CELL_H});
+      }
 
-  if (!fileInput.files.length) {
-    alert("❌ PDF file upload karo");
-    return;
-  }
+      const finalBytes = await out.save();
+      const blob = new Blob([finalBytes], {type:'application/pdf'});
+      const url = URL.createObjectURL(blob);
 
-  alert(
-    "✅ Company: " + company.value +
-    "\n✅ Mode: " + mode.value +
-    "\n✅ File selected\n\nNext step: Crop logic"
-  );
-  // ===== THERMAL LABEL SIZE (FINAL) =====
-if (company.value === "meesho" && mode.value === "thermal") {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Printcrop_A4_Labels.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
 
-  alert(
-    "🧠 Crop Logic Active\n\n" +
-    "Company: Meesho\n" +
-    "Mode: Thermal (4 x 6 inch)\n\n" +
-    "अब 1 label = 1 page बनेगा"
-  );
-
-  // FINAL LABEL SIZE
-  const LABEL_WIDTH_INCH = 4;
-  const LABEL_HEIGHT_INCH = 6;
-
-  // PDF points (important)
-  const LABEL_WIDTH = 4 * 72;   // 288
-  const LABEL_HEIGHT = 6 * 72;  // 432
-
-  console.log("Thermal label size:", LABEL_WIDTH, LABEL_HEIGHT);
-
- // ===== REAL THERMAL PDF PROCESS START =====
-
-const file = fileInput.files[0];
-const reader = new FileReader();
-
-reader.onload = async function () {
-  const existingPdfBytes = reader.result;
-
-  const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
-  const newPdf = await PDFLib.PDFDocument.create();
-
-  const pages = pdfDoc.getPages();
-
-  for (let i = 0; i < pages.length; i++) {
-    const page = pages[i];
-    const { width, height } = page.getSize();
-
-    const newPage = newPdf.addPage([LABEL_WIDTH, LABEL_HEIGHT]);
-
-    const embeddedPage = await newPdf.embedPage(page);
-
-    newPage.drawPage(embeddedPage, {
-      x: 0,
-      y: 0,
-      width: LABEL_WIDTH,
-      height: LABEL_HEIGHT,
-    });
-  }
-
-  const pdfBytes = await newPdf.save();
-  const blob = new Blob([pdfBytes], { type: "application/pdf" });
-
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "meesho-thermal-label.pdf";
-  link.click();
-
-
-}
-  // ---- CROP LOGIC START (MEESHO + A4) ----
-if (company.value === "meesho" && mode.value === "a4") {
-  const existingPdfBytes = await file.arrayBuffer();
-const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
-
-// A4 size (points)
-const A4_WIDTH = 595;
-const A4_HEIGHT = 842;
-
-// New PDF
-const newPdf = await PDFLib.PDFDocument.create();
-
-// Label size (4 labels per A4)
-const LABEL_WIDTH = A4_WIDTH / 2;
-const LABEL_HEIGHT = A4_HEIGHT / 2;
-
-const pages = pdfDoc.getPages();
-
-for (let i = 0; i < pages.length; i++) {
-  const srcPage = pages[i];
-
-  for (let row = 0; row < 2; row++) {
-    for (let col = 0; col < 2; col++) {
-      const [embeddedPage] = await newPdf.embedPages([srcPage], [{
-        x: col * LABEL_WIDTH,
-        y: A4_HEIGHT - (row + 1) * LABEL_HEIGHT,
-        width: LABEL_WIDTH,
-        height: LABEL_HEIGHT,
-      }]);
-
-      const page = newPdf.addPage([LABEL_WIDTH, LABEL_HEIGHT]);
-      page.drawPage(embeddedPage, {
-        x: 0,
-        y: 0,
-        width: LABEL_WIDTH,
-        height: LABEL_HEIGHT,
-      });
+    }catch(e){
+      // Silent fail: do nothing (professional behaviour)
+      // User can reselect file and try again
+    }finally{
+      btn.disabled = false;
     }
-  }
-}
-
-// Download
-const pdfBytes = await newPdf.save();
-const blob = new Blob([pdfBytes], { type: "application/pdf" });
-const link = document.createElement("a");
-link.href = URL.createObjectURL(blob);
-link.download = "meesho-a4-4-labels.pdf";
-link.click();
-  console.log("MEESHO A4 LOGIC START");
-  const existingPdfBytes = await file.arrayBuffer();
-const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
-
-// A4 page size in points
-const A4_WIDTH = 595;
-const A4_HEIGHT = 842;
-
-// Create new PDF
-const newPdf = await PDFLib.PDFDocument.create();
-
-// Label size (4 labels per page)
-const LABEL_WIDTH = A4_WIDTH / 2;
-const LABEL_HEIGHT = A4_HEIGHT / 2;
-
-const pages = pdfDoc.getPages();
-
-for (let i = 0; i < pages.length; i++) {
-  const srcPage = pages[i];
-
-  for (let row = 0; row < 2; row++) {
-    for (let col = 0; col < 2; col++) {
-      const [embeddedPage] = await newPdf.embedPages([srcPage], [{
-        x: col * LABEL_WIDTH,
-        y: A4_HEIGHT - (row + 1) * LABEL_HEIGHT,
-        width: LABEL_WIDTH,
-        height: LABEL_HEIGHT,
-      }]);
-
-      const page = newPdf.addPage([LABEL_WIDTH, LABEL_HEIGHT]);
-      page.drawPage(embeddedPage, {
-        x: 0,
-        y: 0,
-        width: LABEL_WIDTH,
-        height: LABEL_HEIGHT,
-      });
-    }
-  }
-}
-
-// Download
-const pdfBytes = await newPdf.save();
-const blob = new Blob([pdfBytes], { type: "application/pdf" });
-const link = document.createElement("a");
-link.href = URL.createObjectURL(blob);
-link.download = "meesho-a4-4-labels.pdf";
-link.click();
-}
-// ---- CROP LOGIC END ----
-}
+  });
+})();
 </script>
+
 </body>
 </html>
