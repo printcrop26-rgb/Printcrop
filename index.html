@@ -1,188 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>PrintCrop – Smart Label Tool</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<title>PrintCrop – Free Label Tool</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<!-- PDF LIB -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<!-- PDF-LIB -->
+<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 
 <style>
-body {
-  margin: 0;
-  font-family: Inter, Arial, sans-serif;
-  background: #0f172a;
-  color: #fff;
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont;
+  background:linear-gradient(180deg,#0b132b,#1c2541);
+  color:#fff;
 }
-
-.container {
-  max-width: 420px;
-  margin: auto;
-  padding: 20px;
+.container{
+  max-width:420px;
+  margin:auto;
+  padding:20px;
 }
-
-.header {
-  text-align: center;
-  margin-bottom: 20px;
+h1{
+  text-align:center;
+  margin-bottom:5px;
 }
-
-.header h1 {
-  font-size: 28px;
-  margin: 0;
+.badge{
+  text-align:center;
+  color:#00ff99;
+  font-weight:600;
+  margin-bottom:20px;
 }
-
-.badge {
-  display: inline-block;
-  background: #16a34a;
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 12px;
-  margin-top: 8px;
+.card{
+  background:#111827;
+  border-radius:14px;
+  padding:18px;
+  margin-bottom:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.4);
 }
-
-.card {
-  background: #020617;
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 16px;
-  border: 1px solid #1e293b;
+label{font-weight:600}
+.option{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:10px 0;
 }
-
-.card h3 {
-  margin: 0 0 10px;
-  font-size: 15px;
+button{
+  width:100%;
+  padding:14px;
+  font-size:16px;
+  font-weight:700;
+  border:none;
+  border-radius:10px;
+  background:#38bdf8;
+  color:#000;
+  cursor:pointer;
 }
-
-.brands {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 8px;
-}
-
-.brand {
-  font-weight: bold;
-}
-
-.meesho { color: #ec4899; }
-.amazon { color: #f59e0b; }
-.flipkart { color: #3b82f6; }
-
-input[type=file] {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  background: #020617;
-  color: #fff;
-}
-
-button {
-  width: 100%;
-  padding: 16px;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 12px;
-  border: none;
-  background: linear-gradient(135deg,#38bdf8,#2563eb);
-  color: #fff;
-  cursor: pointer;
-}
-
-.footer {
-  text-align: center;
-  font-size: 12px;
-  opacity: 0.6;
-  margin-top: 20px;
+button:active{transform:scale(.98)}
+.footer{
+  text-align:center;
+  font-size:13px;
+  opacity:.7;
 }
 </style>
 </head>
 
 <body>
-
 <div class="container">
 
-  <div class="header">
-    <h1>PrintCrop</h1>
-    <div class="badge">100% Free • No Login</div>
-  </div>
+<h1>PrintCrop</h1>
+<div class="badge">100% Free • No Login</div>
 
-  <div class="card">
-    <h3>Upload Label PDF</h3>
-    <input type="file" id="pdfFile" accept="application/pdf">
-    <div class="brands">
-      <div class="brand meesho">Meesho</div>
-      <div class="brand amazon">Amazon</div>
-      <div class="brand flipkart">Flipkart</div>
-    </div>
-  </div>
+<div class="card">
+  <label>Select Company</label>
+  <div class="option"><input type="radio" name="company" value="meesho"> Meesho</div>
+  <div class="option"><input type="radio" name="company" value="amazon"> Amazon</div>
+  <div class="option"><input type="radio" name="company" value="flipkart"> Flipkart</div>
+</div>
 
-  <button onclick="processPDF()">Generate A4 PDF (Download)</button>
+<div class="card">
+  <label>Print Mode</label>
+  <div class="option"><input type="radio" name="mode" value="a4" checked> A4 (Auto Layout)</div>
+  <div class="option"><input type="radio" name="mode" value="thermal"> Thermal 4×6</div>
+</div>
 
-  <div class="footer">
-    Smart label arranger • Future Ads supported
-  </div>
+<div class="card">
+  <label>Upload Label PDF</label><br><br>
+  <input type="file" id="fileInput" accept="application/pdf">
+</div>
+
+<button onclick="generatePDF()">Download Cropped PDF</button>
+
+<div class="footer"><br>Ads-Ready • Professional Output</div>
 
 </div>
 
 <script>
-async function processPDF() {
-  const fileInput = document.getElementById("pdfFile");
-  if (!fileInput.files.length) {
-    alert("Please upload label PDF");
-    return;
-  }
+async function generatePDF(){
+  const file = document.getElementById('fileInput').files[0];
+  if(!file){ alert("Upload PDF"); return; }
 
-  const fileBytes = await fileInput.files[0].arrayBuffer();
-  const srcPdf = await PDFLib.PDFDocument.load(fileBytes);
+  const company = document.querySelector('input[name="company"]:checked');
+  if(!company){ alert("Select company"); return; }
+
+  const mode = document.querySelector('input[name="mode"]:checked').value;
+
+  const bytes = await file.arrayBuffer();
+  const srcPdf = await PDFLib.PDFDocument.load(bytes);
+  const pages = srcPdf.getPages();
+
   const outPdf = await PDFLib.PDFDocument.create();
 
-  const pages = srcPdf.getPages();
-  const A4_WIDTH = 595;
-  const A4_HEIGHT = 842;
+  const A4_W = 595.28;
+  const A4_H = 841.89;
 
-  let page;
-  let slot = 0;
+  let perPage = mode==="thermal" ? 1 : 4;
 
-  for (let i = 0; i < pages.length; i++) {
+  for(let i=0;i<pages.length;i+=perPage){
+    const page = outPdf.addPage([A4_W,A4_H]);
 
-    if (slot === 0) {
-      page = outPdf.addPage([A4_WIDTH, A4_HEIGHT]);
+    const slice = pages.slice(i,i+perPage);
+
+    let rows=1, cols=1;
+    if(slice.length===2){rows=1;cols=2;}
+    if(slice.length>=3){rows=2;cols=2;}
+
+    const cellW = A4_W/cols;
+    const cellH = A4_H/rows;
+
+    for(let j=0;j<slice.length;j++){
+      const src = slice[j];
+      const embed = await outPdf.embedPage(src);
+
+      const scale = Math.min(
+        cellW/embed.width,
+        cellH/embed.height
+      );
+
+      const col = j%cols;
+      const row = Math.floor(j/cols);
+
+      const x = col*cellW + (cellW - embed.width*scale)/2;
+      const y = A4_H - (row+1)*cellH + (cellH - embed.height*scale)/2;
+
+      page.drawPage(embed,{x,y,scale});
     }
-
-    const embedded = await outPdf.embedPage(pages[i]);
-    const scale = Math.min(
-      (A4_WIDTH / 2) / embedded.width,
-      (A4_HEIGHT / 2) / embedded.height
-    );
-
-    const positions = [
-      { x: 0, y: A4_HEIGHT / 2 },
-      { x: A4_WIDTH / 2, y: A4_HEIGHT / 2 },
-      { x: 0, y: 0 },
-      { x: A4_WIDTH / 2, y: 0 }
-    ];
-
-    page.drawPage(embedded, {
-      x: positions[slot].x,
-      y: positions[slot].y,
-      xScale: scale,
-      yScale: scale
-    });
-
-    slot++;
-
-    if (slot === 4) slot = 0;
   }
 
-  const finalBytes = await outPdf.save();
-  const blob = new Blob([finalBytes], { type: "application/pdf" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "PrintCrop_A4_Labels.pdf";
-  link.click();
+  const out = await outPdf.save();
+  const blob = new Blob([out],{type:"application/pdf"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "PrintCrop_Output.pdf";
+  a.click();
 }
 </script>
-
 </body>
 </html>
