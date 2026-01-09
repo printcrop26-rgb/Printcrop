@@ -128,13 +128,24 @@ document.getElementById('download').onclick = async () => {
           for (let j = 0; j < buf.length; j++) {
             const pos = layouts[j];
             const embeddedPage = await outPdf.embedPage(buf[j]);
-            const sc = Math.min((W/2) / buf[j].getWidth(), (H/2) / buf[j].getHeight());
-            
-            pg.drawPage(embeddedPage, {
-              x: pos[0],
-              y: pos[1],
-              scale: sc
-            });
+
+const targetW = W / 2;
+const targetH = H / 2;
+
+const scale = Math.min(
+  targetW / embeddedPage.width,
+  targetH / embeddedPage.height
+);
+
+// 🔵 label ko compartment ke center me bithana
+const drawX = pos[0] + (targetW - embeddedPage.width * scale) / 2;
+const drawY = pos[1] + (targetH - embeddedPage.height * scale) / 2;
+
+pg.drawPage(embeddedPage, {
+  x: drawX,
+  y: drawY,
+  scale: scale
+});
           }
           buf = [];
         }
