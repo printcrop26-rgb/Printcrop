@@ -10,33 +10,38 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
-body{background:linear-gradient(180deg,#0b1e2d,#0f2f46);color:#fff}
+body{background:linear-gradient(180deg,#0b1e2d,#0f2f46);color:#fff; min-height: 100vh;}
 .container{max-width:480px;margin:auto;padding:20px}
 
-header{background:#fff;color:#000;padding:14px;text-align:center}
+header{background:#fff;color:#000;padding:14px;text-align:center; border-radius: 0 0 20px 20px;}
 h1{color:#1e3a8a;font-size:24px}
 
-.card{background:#fff;color:#000;border-radius:18px;padding:20px;margin-top:20px}
+.card{background:#fff;color:#000;border-radius:18px;padding:20px;margin-top:20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3);}
 
-.company{border:2px solid #e5e7eb;border-radius:14px;padding:14px;text-align:center;margin-bottom:10px;cursor:pointer}
-.company.active{border-color:#2da4ff;background:#f0f9ff}
+.company{border:2px solid #e5e7eb;border-radius:14px;padding:14px;text-align:center;margin-bottom:10px;cursor:pointer; font-weight: 600; transition: 0.3s;}
+.company.active{border-color:#2da4ff;background:#f0f9ff; color: #2da4ff;}
 
 .options{display:flex;gap:10px;margin:16px 0}
-.options label{border:2px solid #e5e7eb;padding:10px 16px;border-radius:999px;cursor:pointer}
-input{display:none}
-input:checked+label{border-color:#2da4ff;background:#f0f9ff}
+.options label{flex: 1; border:2px solid #e5e7eb; padding:12px; text-align: center; border-radius: 999px; cursor:pointer; font-weight: 600;}
 
-.upload{border:2px dashed #94a3b8;padding:20px;text-align:center;border-radius:14px;margin-bottom:16px}
+/* Sirf Radio button hide karne ke liye */
+input[type="radio"] { display: none; }
+input[type="radio"]:checked + label { border-color:#2da4ff; background:#f0f9ff; color: #2da4ff; }
+
+.upload{border:2px dashed #94a3b8;padding:25px;text-align:center;border-radius:14px;margin-bottom:16px; background: #f8fafc;}
+#pdf { margin-top: 10px; width: 100%; }
 
 button{
   width:100%;
   background:linear-gradient(135deg,#2563eb,#38bdf8);
   color:#fff;
-  padding:16px;
-  font-size:17px;
+  padding:18px;
+  font-size:18px;
+  font-weight: 700;
   border:none;
   border-radius:14px;
-  cursor:pointer
+  cursor:pointer;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
 }
 button:active{transform:scale(.97)}
 </style>
@@ -44,79 +49,120 @@ button:active{transform:scale(.97)}
 
 <body>
 
-<header><h1>printcrop</h1></header>
+<header><h1>printcrop <span style="font-size: 12px; background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 20px; margin-left: 10px;">100% Free</span></h1></header>
 
-<div class="container card">
+<div class="container">
+    <div class="card">
+        <h3 style="margin-bottom:15px">Select Company</h3>
+        <div class="company" data-c="Amazon">Amazon</div>
+        <div class="company" data-c="Flipkart">Flipkart</div>
+        <div class="company" data-c="Meesho">Meesho</div>
 
-<h3>Select Company</h3>
-<div class="company" data-c="Amazon">Amazon</div>
-<div class="company" data-c="Flipkart">Flipkart</div>
-<div class="company" data-c="Meesho">Meesho</div>
+        <h3 style="margin-top:25px">Select Print Type</h3>
+        <div class="options">
+          <input type="radio" id="a4" name="p" checked>
+          <label for="a4">A4 Sheet</label>
 
-<h3 style="margin-top:18px">Select Print Type</h3>
-<div class="options">
-  <input type="radio" id="a4" name="p" checked>
-  <label for="a4">A4 Sheet</label>
+          <input type="radio" id="lp" name="p">
+          <label for="lp">Label Printer</label>
+        </div>
 
-  <input type="radio" id="lp" name="p">
-  <label for="lp">Label Printer</label>
-</div>
+        <div class="upload">
+          <b style="font-size: 18px;">Upload Label PDF</b><br>
+          <input type="file" id="pdf" accept="application/pdf">
+        </div>
 
-<div class="upload">
-  <b>Upload Label PDF</b><br><br>
-  <input type="file" id="pdf" accept="application/pdf">
-</div>
-
-<button id="download">Download Final PDF</button>
-
+        <button id="download">Download Final PDF</button>
+    </div>
 </div>
 
 <script>
+// PDF-Lib setup
 const { PDFDocument } = PDFLib;
-let company=null;
+let selectedCompany = null;
 
-document.querySelectorAll('.company').forEach(c=>{
-  c.onclick=()=>{
-    document.querySelectorAll('.company').forEach(x=>x.classList.remove('active'));
+// Company Selection Logic
+document.querySelectorAll('.company').forEach(c => {
+  c.onclick = () => {
+    document.querySelectorAll('.company').forEach(x => x.classList.remove('active'));
     c.classList.add('active');
-    company=c.dataset.c;
+    selectedCompany = c.dataset.c;
   }
 });
 
+// Download/Generate Logic
 document.getElementById('download').onclick = async () => {
-  if(!company) return alert("Select company");
-  const file=document.getElementById('pdf').files[0];
-  if(!file) return alert("Upload PDF");
+  const fileInput = document.getElementById('pdf');
+  
+  // Validation
+  if(!selectedCompany) {
+      alert("Please select a Company (Amazon/Flipkart/Meesho)");
+      return;
+  }
+  if(!fileInput.files[0]) {
+      alert("Please upload a PDF file first");
+      return;
+  }
 
-  const srcBytes=await file.arrayBuffer();
-  const srcPdf=await PDFDocument.load(srcBytes);
-  const outPdf=await PDFDocument.create();
-  const pages=await outPdf.copyPages(srcPdf,srcPdf.getPageIndices());
+  try {
+      const btn = document.getElementById('download');
+      btn.innerText = "Processing...";
+      btn.disabled = true;
 
-  const W=595,H=842; let buf=[];
-  pages.forEach((p,i)=>{
-    buf.push(p);
-    if(buf.length===4 || i===pages.length-1){
-      const pg=outPdf.addPage([W,H]);
-      [[0,H/2],[W/2,H/2],[0,0],[W/2,0]].forEach((s,j)=>{
-        if(buf[j]){
-          const sc=Math.min((W/2)/buf[j].getWidth(),(H/2)/buf[j].getHeight());
-          pg.drawPage(buf[j],{x:s[0],y:s[1],scale:sc});
+      const srcBytes = await fileInput.files[0].arrayBuffer();
+      const srcPdf = await PDFDocument.load(srcBytes);
+      const outPdf = await PDFDocument.create();
+      
+      const indices = srcPdf.getPageIndices();
+      const pages = await outPdf.copyPages(srcPdf, indices);
+
+      const W = 595, H = 842; // A4 size
+      let buf = [];
+
+      for (let i = 0; i < pages.length; i++) {
+        buf.push(pages[i]);
+        if (buf.length === 4 || i === pages.length - 1) {
+          const pg = outPdf.addPage([W, H]);
+          const layouts = [[0, H/2], [W/2, H/2], [0, 0], [W/2, 0]];
+          
+          for (let j = 0; j < buf.length; j++) {
+            const pos = layouts[j];
+            const embeddedPage = await outPdf.embedPage(buf[j]);
+            const sc = Math.min((W/2) / buf[j].getWidth(), (H/2) / buf[j].getHeight());
+            
+            pg.drawPage(embeddedPage, {
+              x: pos[0],
+              y: pos[1],
+              scale: sc
+            });
+          }
+          buf = [];
         }
-      });
-      buf=[];
-    }
-  });
+      }
 
-  const blob=new Blob([await outPdf.save()],{type:"application/pdf"});
-  const url=URL.createObjectURL(blob);
+      const pdfBytes = await outPdf.save();
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
 
-  const iframe=document.createElement("iframe");
-  iframe.style.display="none";
-  iframe.src=url;
-  document.body.appendChild(iframe);
+      // Fixed Download Method for Mobile/Web
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `PrintCrop_${selectedCompany}_Label.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-  setTimeout(()=>URL.revokeObjectURL(url),4000);
+      // Cleanup
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      btn.innerText = "Download Final PDF";
+      btn.disabled = false;
+
+  } catch (error) {
+      console.error(error);
+      alert("Error processing PDF: " + error.message);
+      document.getElementById('download').innerText = "Download Final PDF";
+      document.getElementById('download').disabled = false;
+  }
 };
 </script>
 
