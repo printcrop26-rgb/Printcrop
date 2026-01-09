@@ -80,87 +80,86 @@ padding:4px 8px;border-radius:20px;margin-left:8px">100% Free</span></h1>
 const { PDFDocument } = PDFLib;
 let selectedCompany = null;
 
-/* Company select */
+/* company select */
 document.querySelectorAll('.company').forEach(c=>{
-c.onclick=()=>{
-document.querySelectorAll('.company').forEach(x=>x.classList.remove('active'));
-c.classList.add('active');
-selectedCompany=c.dataset.c;
-};
+  c.onclick=()=>{
+    document.querySelectorAll('.company').forEach(x=>x.classList.remove('active'));
+    c.classList.add('active');
+    selectedCompany=c.dataset.c;
+  };
 });
 
-/* MAIN LOGIC */
+/* 🔥 ONLY CROPPING / GENERATION LOGIC CHANGED */
 document.getElementById('download').onclick = async () => {
 
-if(!selectedCompany){alert("Select company");return;}
-const file=document.getElementById('pdf').files[0];
-if(!file){alert("Upload PDF");return;}
+  if(!selectedCompany){ alert("Select company"); return; }
+  const file=document.getElementById('pdf').files[0];
+  if(!file){ alert("Upload PDF"); return; }
 
-const btn=document.getElementById('download');
-btn.innerText="Processing...";
-btn.disabled=true;
+  const btn=document.getElementById('download');
+  btn.innerText="Processing...";
+  btn.disabled=true;
 
-const srcBytes=await file.arrayBuffer();
-const srcPdf=await PDFDocument.load(srcBytes);
-const outPdf=await PDFDocument.create();
+  const srcBytes = await file.arrayBuffer();
+  const srcPdf = await PDFDocument.load(srcBytes);
+  const outPdf = await PDFDocument.create();
 
-const pages=srcPdf.getPageIndices();
-const copied=await outPdf.copyPages(srcPdf,pages);
+  const labels = srcPdf.getPages(); // 1 page = 1 label
 
-const W=595, H=842; // A4
-const slots=[
-[0,H/2],[W/2,H/2],
-[0,0],[W/2,0]
-];
+  const A4_W = 595;
+  const A4_H = 842;
 
-let buffer=[];
+  const slots = [
+    {x:0,        y:A4_H/2},   // top-left
+    {x:A4_W/2,   y:A4_H/2},   // top-right
+    {x:0,        y:0},        // bottom-left
+    {x:A4_W/2,   y:0},        // bottom-right
+  ];
 
-for(let i=0;i<copied.length;i++){
-buffer.push(copied[i]);
+  let buffer = [];
 
-if(buffer.length===4 || i===copied.length-1){
+  for(let i=0;i<labels.length;i++){
+    buffer.push(labels[i]);
 
-const pg=outPdf.addPage([W,H]);
+    if(buffer.length === 4 || i === labels.length - 1){
 
-for(let j=0;j<buffer.length;j++){
-const embedded=await outPdf.embedPage(buffer[j]);
+      const page = outPdf.addPage([A4_W, A4_H]);
 
-const targetW=W/2;
-const targetH=H/2;
+      for(let j=0;j<buffer.length;j++){
+        const embedded = await outPdf.embedPage(buffer[j]);
 
-const pageW=embedded.width;
-const pageH=embedded.height;
+        const slotW = A4_W / 2;
+        const slotH = A4_H / 2;
 
-/* 🔥 FINAL FIX — CORRECT SCALE */
-const scale=Math.min(
-targetW/pageW,
-targetH/pageH
-);
+        const scale = Math.min(
+          slotW / embedded.width,
+          slotH / embedded.height
+        );
 
-/* CENTER ALIGN */
-const x=slots[j][0]+(targetW-pageW*scale)/2;
-const y=slots[j][1]+(targetH-pageH*scale)/2;
+        const x = slots[j].x + (slotW - embedded.width * scale) / 2;
+        const y = slots[j].y + (slotH - embedded.height * scale) / 2;
 
-pg.drawPage(embedded,{x,y,scale});
-}
-buffer=[];
-}
-}
+        page.drawPage(embedded, { x, y, scale });
+      }
 
-const bytes=await outPdf.save();
-const blob=new Blob([bytes],{type:"application/pdf"});
-const url=URL.createObjectURL(blob);
+      buffer = [];
+    }
+  }
 
-const a=document.createElement("a");
-a.href=url;
-a.download=`printcrop_${selectedCompany}_A4.pdf`;
-document.body.appendChild(a);
-a.click();
-document.body.removeChild(a);
-URL.revokeObjectURL(url);
+  const bytes = await outPdf.save();
+  const blob = new Blob([bytes], {type:"application/pdf"});
+  const url = URL.createObjectURL(blob);
 
-btn.innerText="Download Final PDF";
-btn.disabled=false;
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `printcrop_${selectedCompany}_A4.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  btn.innerText="Download Final PDF";
+  btn.disabled=false;
 };
 </script>
 
