@@ -3,167 +3,222 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>printcrop – Free Label Tool</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<title>printcrop – 100% Free | No Login</title>
+
+<meta name="description" content="printcrop – 100% Free Amazon Flipkart Meesho A4 Label Crop Tool. No login. Direct PDF download.">
+<meta name="keywords" content="printcrop, label crop, meesho label, flipkart label, amazon label, a4 label print">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
-body{background:linear-gradient(180deg,#0b1e2d,#0f2f46);color:#fff;min-height:100vh}
-.container{max-width:480px;margin:auto;padding:20px}
-header{background:#fff;color:#000;padding:14px;text-align:center;border-radius:0 0 20px 20px}
-h1{color:#1e3a8a;font-size:24px}
-.card{background:#fff;color:#000;border-radius:18px;padding:20px;margin-top:20px;box-shadow:0 10px 25px rgba(0,0,0,.3)}
-.company{border:2px solid #e5e7eb;border-radius:14px;padding:14px;text-align:center;margin-bottom:10px;cursor:pointer;font-weight:600}
-.company.active{border-color:#2da4ff;background:#f0f9ff;color:#2da4ff}
-.options{display:flex;gap:10px;margin:16px 0}
-.options label{flex:1;border:2px solid #e5e7eb;padding:12px;text-align:center;border-radius:999px;cursor:pointer;font-weight:600}
-input[type="radio"]{display:none}
-input[type="radio"]:checked+label{border-color:#2da4ff;background:#f0f9ff;color:#2da4ff}
-.upload{border:2px dashed #94a3b8;padding:25px;text-align:center;border-radius:14px;margin-bottom:16px;background:#f8fafc}
-#pdf{margin-top:10px;width:100%}
-button{width:100%;background:linear-gradient(135deg,#2563eb,#38bdf8);color:#fff;padding:18px;font-size:18px;font-weight:700;border:none;border-radius:14px;cursor:pointer}
-button:active{transform:scale(.97)}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{background:linear-gradient(180deg,#0b1e2d,#0f2f46);color:#fff}
+section{padding:80px 16px}
+.container{max-width:1200px;margin:auto}
+
+header{
+  position:sticky;top:0;z-index:100;
+  background:#fff;color:#000;
+  padding:16px 24px;
+  box-shadow:0 2px 12px rgba(0,0,0,.08)
+}
+h1{font-size:28px;color:#1e3a8a;font-weight:700}
+.badge{background:#e0f2fe;color:#0369a1;padding:6px 12px;border-radius:999px;font-size:14px}
+
+.hero{text-align:center}
+.hero h2{font-size:42px;margin-bottom:20px}
+.hero p{max-width:700px;margin:auto;opacity:.9}
+
+.benefits{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:24px;margin-top:60px
+}
+.benefit{
+  background:rgba(255,255,255,.08);
+  border-radius:16px;padding:24px;text-align:center
+}
+
+.tool{
+  background:#fff;color:#000;
+  border-radius:20px;
+  padding:32px;
+  box-shadow:0 20px 60px rgba(0,0,0,.2)
+}
+
+.companies{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:16px
+}
+.company{
+  border:2px solid #e5e7eb;
+  border-radius:14px;
+  padding:18px;
+  text-align:center;
+  cursor:pointer;
+  user-select:none
+}
+.company.active{
+  border-color:#2da4ff;
+  background:#f0f9ff;
+  font-weight:600
+}
+
+.options{display:flex;gap:16px;margin:24px 0}
+.options input{display:none}
+.options label{
+  border:2px solid #e5e7eb;
+  padding:14px 20px;
+  border-radius:999px;
+  cursor:pointer
+}
+.options input:checked+label{
+  border-color:#2da4ff;
+  background:#f0f9ff
+}
+
+.upload{
+  border:2px dashed #94a3b8;
+  padding:40px;
+  text-align:center;
+  border-radius:16px;
+  margin-bottom:24px
+}
+
+.download{
+  width:100%;
+  background:linear-gradient(135deg,#2563eb,#38bdf8);
+  color:#fff;
+  padding:18px;
+  font-size:18px;
+  border:none;
+  border-radius:16px;
+  cursor:pointer
+}
+
+.ad{
+  height:120px;
+  border:2px dashed rgba(255,255,255,.4);
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:.6;
+  margin:40px 0
+}
+
+footer{text-align:center;padding:40px;opacity:.6}
 </style>
 </head>
 
 <body>
 
 <header>
-<h1>printcrop <span style="font-size:12px;background:#dcfce7;color:#166534;padding:4px 8px;border-radius:20px;margin-left:8px">100% Free</span></h1>
+<h1>printcrop <span class="badge">100% Free · No Login</span></h1>
 </header>
 
+<section><div class="container"><div class="ad">Top Ad Slot</div></div></section>
+
+<section class="hero">
 <div class="container">
-<div class="card">
+<h2>Smart Label Cropping for Amazon · Flipkart · Meesho</h2>
+<p>Auto-fit A4 labels. Direct PDF download. No resize issues.</p>
+
+<div class="benefits">
+<div class="benefit">Perfect A4 Fit</div>
+<div class="benefit">No Login</div>
+<div class="benefit">Auto Next Page</div>
+<div class="benefit">Instant Download</div>
+</div>
+</div>
+</section>
+
+<section><div class="container"><div class="ad">Middle Ad Slot</div></div></section>
+
+<section>
+<div class="container tool">
 
 <h3>Select Company</h3>
-<div class="company" data-c="Amazon">Amazon</div>
-<div class="company" data-c="Flipkart">Flipkart</div>
-<div class="company" data-c="Meesho">Meesho</div>
+<div class="companies">
+<div class="company" data-company="Amazon">Amazon</div>
+<div class="company" data-company="Flipkart">Flipkart</div>
+<div class="company" data-company="Meesho">Meesho</div>
+</div>
 
-<h3 style="margin-top:25px">Select Print Type</h3>
+<h3 style="margin-top:32px">Select Print Type</h3>
 <div class="options">
-<input type="radio" id="a4" name="p" checked>
+<input type="radio" id="a4" name="print" checked>
 <label for="a4">A4 Sheet</label>
-<input type="radio" id="lp" name="p">
-<label for="lp">Label Printer</label>
+<input type="radio" id="thermal" name="print">
+<label for="thermal">Label Printer</label>
 </div>
 
 <div class="upload">
-<b style="font-size:18px">Upload Label PDF</b><br>
-<input type="file" id="pdf" accept="application/pdf">
+<h3>Upload Label PDF</h3>
+<input type="file" id="pdfFile" accept="application/pdf">
 </div>
 
-<button id="download">Download Final PDF</button>
+<button class="download" id="downloadBtn">Download Final PDF</button>
 
 </div>
-</div>
+</section>
+
+<section><div class="container"><div class="ad">Bottom Ad Slot</div></div></section>
+
+<footer>©️ 2026 printcrop · Built for Sellers</footer>
 
 <script>
 const { PDFDocument } = PDFLib;
 let selectedCompany = null;
 
 document.querySelectorAll('.company').forEach(c=>{
-  c.onclick=()=>{
+  c.addEventListener('click',()=>{
     document.querySelectorAll('.company').forEach(x=>x.classList.remove('active'));
     c.classList.add('active');
-    selectedCompany=c.dataset.c;
-  };
+    selectedCompany = c.dataset.company;
+  });
 });
 
-document.getElementById('download').onclick = async () => {
-
-  if(!selectedCompany){ alert("Select company"); return; }
-  const file=document.getElementById('pdf').files[0];
-  if(!file){ alert("Upload PDF"); return; }
-
-  const btn=document.getElementById('download');
-  btn.innerText="Processing...";
-  btn.disabled=true;
+document.getElementById('downloadBtn').addEventListener('click', async () => {
+  if(!selectedCompany) return alert('Select company');
+  const file = document.getElementById('pdfFile').files[0];
+  if(!file) return alert('Upload PDF');
 
   const srcBytes = await file.arrayBuffer();
   const srcPdf = await PDFDocument.load(srcBytes);
   const outPdf = await PDFDocument.create();
 
-  /* 🔥 STEP 1: Detect & Split labels like Quick Label Crop */
-  const rawPages = srcPdf.getPages();
-  let labels = [];
+  const pages = await outPdf.copyPages(srcPdf, srcPdf.getPageIndices());
 
-  rawPages.forEach(p=>{
-    const w = p.getWidth();
-    const h = p.getHeight();
-
-    if(w > h * 1.3){
-      labels.push({page:p, type:"left"});
-      labels.push({page:p, type:"right"});
-    }else{
-      labels.push({page:p, type:"full"});
-    }
-  });
-
-  /* 🔥 STEP 2: A4 4-slot layout */
   const A4_W = 595, A4_H = 842;
-  const slots = [
-    {x:0,        y:A4_H/2},
-    {x:A4_W/2,   y:A4_H/2},
-    {x:0,        y:0},
-    {x:A4_W/2,   y:0},
-  ];
+  let buffer = [];
 
-  let buffer=[];
-
-  for(let i=0;i<labels.length;i++){
-    buffer.push(labels[i]);
-
-    if(buffer.length===4 || i===labels.length-1){
+  for(let i=0;i<pages.length;i++){
+    buffer.push(pages[i]);
+    if(buffer.length===4 || i===pages.length-1){
       const page = outPdf.addPage([A4_W,A4_H]);
-
-      for(let j=0;j<buffer.length;j++){
-        let embed;
-
-        if(buffer[j].type==="left"){
-          embed = await outPdf.embedPage(
-            buffer[j].page,
-            {left:0,bottom:0,right:buffer[j].page.getWidth()/2,top:buffer[j].page.getHeight()}
-          );
-        }
-        else if(buffer[j].type==="right"){
-          embed = await outPdf.embedPage(
-            buffer[j].page,
-            {left:buffer[j].page.getWidth()/2,bottom:0,right:buffer[j].page.getWidth(),top:buffer[j].page.getHeight()}
-          );
-        }
-        else{
-          embed = await outPdf.embedPage(buffer[j].page);
-        }
-
-        const slotW=A4_W/2, slotH=A4_H/2;
-        const scale=Math.min(slotW/embed.width,slotH/embed.height);
-        const x=slots[j].x+(slotW-embed.width*scale)/2;
-        const y=slots[j].y+(slotH-embed.height*scale)/2;
-
-        page.drawPage(embed,{x,y,scale});
-      }
+      const slots = [[0,A4_H/2],[A4_W/2,A4_H/2],[0,0],[A4_W/2,0]];
+      buffer.forEach((p,idx)=>{
+        const s=slots[idx];
+        const scale=Math.min((A4_W/2)/p.getWidth(),(A4_H/2)/p.getHeight());
+        page.drawPage(p,{x:s[0],y:s[1],scale});
+      });
       buffer=[];
     }
   }
 
   const bytes = await outPdf.save();
-  const blob = new Blob([bytes],{type:"application/pdf"});
+  const blob = new Blob([bytes], {type:'application/pdf'});
   const url = URL.createObjectURL(blob);
 
-  const a=document.createElement("a");
-  a.href=url;
-  a.download=`printcrop_${selectedCompany}_A4.pdf`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  /* ✅ FINAL MOBILE-SAFE DOWNLOAD */
+  window.location.href = url;
 
-  btn.innerText="Download Final PDF";
-  btn.disabled=false;
-};
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
 </script>
 
 </body>
