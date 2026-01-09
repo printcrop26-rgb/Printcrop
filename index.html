@@ -5,20 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quick Label Crop – 100% Free | No Login</title>
 
-<meta name="description" content="100% Free Amazon Flipkart Meesho Label Crop Tool. Auto-fit A4 labels, no login, instant PDF download.">
-<meta name="keywords" content="label crop, meesho label, flipkart label, amazon label, a4 label print">
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
 body{background:linear-gradient(180deg,#0b1e2d,#0f2f46);color:#fff}
-section{padding:80px 16px}
+section{padding:80px 16px;position:relative}
 .container{max-width:1200px;margin:auto}
 
 header{
-  position:sticky;top:0;z-index:100;
+  position:sticky;top:0;z-index:1000;
   background:#fff;color:#000;
   padding:16px 24px;
   box-shadow:0 2px 12px rgba(0,0,0,.08)
@@ -30,21 +27,13 @@ h1{font-size:28px;color:#1e3a8a;font-weight:700}
 .hero h2{font-size:42px;margin-bottom:20px}
 .hero p{max-width:700px;margin:auto;opacity:.9}
 
-.benefits{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:24px;margin-top:60px
-}
-.benefit{
-  background:rgba(255,255,255,.08);
-  border-radius:16px;padding:24px;text-align:center
-}
-
 .tool{
   background:#fff;color:#000;
   border-radius:20px;
   padding:32px;
-  box-shadow:0 20px 60px rgba(0,0,0,.2)
+  box-shadow:0 20px 60px rgba(0,0,0,.2);
+  position:relative;
+  z-index:10; /* 🔥 IMPORTANT */
 }
 
 .companies{
@@ -95,10 +84,10 @@ h1{font-size:28px;color:#1e3a8a;font-weight:700}
   font-size:18px;
   border:none;
   border-radius:16px;
-  cursor:pointer
+  cursor:pointer;
 }
 
-/* ADS */
+/* 🔴 ADS FIX */
 .ad{
   height:120px;
   border:2px dashed rgba(255,255,255,.4);
@@ -107,7 +96,8 @@ h1{font-size:28px;color:#1e3a8a;font-weight:700}
   align-items:center;
   justify-content:center;
   opacity:.6;
-  margin:40px 0
+  margin:40px 0;
+  pointer-events:none; /* 🔥 THIS FIXES BUTTON ISSUE */
 }
 
 footer{text-align:center;padding:40px;opacity:.6}
@@ -120,25 +110,7 @@ footer{text-align:center;padding:40px;opacity:.6}
 <h1>Quick Label Crop <span class="badge">100% Free · No Login</span></h1>
 </header>
 
-<!-- TOP AD -->
 <section><div class="container"><div class="ad">Top Ad Slot</div></div></section>
-
-<section class="hero">
-<div class="container">
-<h2>Smart Label Cropping for Amazon · Flipkart · Meesho</h2>
-<p>Auto-fit labels on A4. No resize. Direct download.</p>
-
-<div class="benefits">
-<div class="benefit">Perfect A4 Fit</div>
-<div class="benefit">No Login</div>
-<div class="benefit">Auto Next Page</div>
-<div class="benefit">Instant Download</div>
-</div>
-</div>
-</section>
-
-<!-- MID AD -->
-<section><div class="container"><div class="ad">Middle Ad Slot</div></div></section>
 
 <section>
 <div class="container tool">
@@ -154,8 +126,6 @@ footer{text-align:center;padding:40px;opacity:.6}
 <div class="options">
 <input type="radio" id="a4" name="print" checked>
 <label for="a4">A4 Sheet</label>
-<input type="radio" id="thermal" name="print">
-<label for="thermal">Label Printer</label>
 </div>
 
 <div class="upload">
@@ -163,53 +133,53 @@ footer{text-align:center;padding:40px;opacity:.6}
 <input type="file" id="pdfFile" accept="application/pdf">
 </div>
 
-<button class="download" id="downloadBtn">Download Final PDF</button>
+<button class="download" id="downloadBtn" type="button">
+Download Final PDF
+</button>
 
 </div>
 </section>
 
-<!-- BOTTOM AD -->
 <section><div class="container"><div class="ad">Bottom Ad Slot</div></div></section>
 
-<footer>©️ 2026 Quick Label Crop · Built for Sellers</footer>
+<footer>©️ 2026 Quick Label Crop</footer>
 
 <script>
 const { PDFDocument } = PDFLib;
 let selectedCompany=null;
 
 document.querySelectorAll('.company').forEach(c=>{
-  c.onclick=()=>{
+  c.addEventListener('click',()=>{
     document.querySelectorAll('.company').forEach(x=>x.classList.remove('active'));
     c.classList.add('active');
     selectedCompany=c.dataset.company;
-  }
+  });
 });
 
-document.getElementById('downloadBtn').onclick=async()=>{
-  if(!selectedCompany)return;
+document.getElementById('downloadBtn').addEventListener('click', async ()=>{
+  if(!selectedCompany) return;
   const file=document.getElementById('pdfFile').files[0];
-  if(!file)return;
+  if(!file) return;
 
   const srcBytes=await file.arrayBuffer();
   const srcPdf=await PDFDocument.load(srcBytes);
   const outPdf=await PDFDocument.create();
 
   const pages=await outPdf.copyPages(srcPdf,srcPdf.getPageIndices());
-
-  const A4_W=595, A4_H=842;
-  let buffer=[];
+  const A4_W=595,A4_H=842;
+  let buf=[];
 
   for(let i=0;i<pages.length;i++){
-    buffer.push(pages[i]);
-    if(buffer.length===4 || i===pages.length-1){
+    buf.push(pages[i]);
+    if(buf.length===4||i===pages.length-1){
       const page=outPdf.addPage([A4_W,A4_H]);
       const slots=[[0,A4_H/2],[A4_W/2,A4_H/2],[0,0],[A4_W/2,0]];
-      buffer.forEach((p,idx)=>{
+      buf.forEach((p,idx)=>{
         const s=slots[idx];
         const scale=Math.min((A4_W/2)/p.getWidth(),(A4_H/2)/p.getHeight());
         page.drawPage(p,{x:s[0],y:s[1],scale});
       });
-      buffer=[];
+      buf=[];
     }
   }
 
@@ -221,14 +191,10 @@ document.getElementById('downloadBtn').onclick=async()=>{
   a.href=url;
   a.download=`${selectedCompany}_A4_Labels.pdf`;
   document.body.appendChild(a);
-
-  /* 🔥 MOBILE SAFE DOWNLOAD FIX */
-  setTimeout(()=>{
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  },0);
-};
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
 </script>
 
 </body>
