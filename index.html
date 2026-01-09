@@ -36,8 +36,8 @@ header{
   gap:10px;
 }
 .logo img{
-  width:40px;
-  height:40px;
+  width:42px;
+  height:42px;
   object-fit:contain;
 }
 .logo span{
@@ -46,19 +46,20 @@ header{
   color:#1e3a8a;
 }
 
-/* ---------- ADS ---------- */
+/* ---------- AD SLOTS ---------- */
 .ad-slot{
-  width:100%;
-  background:#ffffff;
-  color:#000;
-  border-radius:12px;
-  padding:18px;
-  margin:18px 0;
-  text-align:center;
+  max-width:480px;
+  margin:18px auto;
+  height:90px;
+  border:2px dashed rgba(255,255,255,.35);
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   font-size:14px;
-  border:2px dashed #cbd5e1;
+  opacity:.8;
+  pointer-events:none;
 }
-.ad-slot small{opacity:.6}
 
 /* ---------- MAIN ---------- */
 main{padding:24px 16px}
@@ -173,23 +174,18 @@ footer{
 <!-- HEADER -->
 <header>
   <div class="logo">
-    <img src="assets/printcrop-logo.png" alt="printcrop logo">
+    <!-- FINAL LOGO IMAGE -->
+    <img src="printcrop-logo.png" alt="printcrop logo">
     <span>printcrop</span>
   </div>
 </header>
 
-<!-- TOP AD -->
-<div class="container">
-  <div class="ad-slot">
-    <strong>Ad Space</strong><br>
-    <small>Top banner ad (Google AdSense)</small>
-  </div>
-</div>
+<!-- TOP AD SLOT -->
+<div class="ad-slot">Ad Slot (Top)</div>
 
 <!-- MAIN -->
 <main>
 <div class="container">
-
   <div class="card">
 
     <h3>Select Company</h3>
@@ -214,23 +210,11 @@ footer{
     <button id="downloadBtn">Download Final PDF</button>
 
   </div>
-
-  <!-- MIDDLE AD -->
-  <div class="ad-slot">
-    <strong>Ad Space</strong><br>
-    <small>Middle content ad</small>
-  </div>
-
 </div>
 </main>
 
-<!-- FOOTER AD -->
-<div class="container">
-  <div class="ad-slot">
-    <strong>Ad Space</strong><br>
-    <small>Footer ad</small>
-  </div>
-</div>
+<!-- MIDDLE AD SLOT -->
+<div class="ad-slot">Ad Slot (Middle)</div>
 
 <!-- FOOTER -->
 <footer>
@@ -251,6 +235,9 @@ footer{
   </div>
 </footer>
 
+<!-- BOTTOM AD SLOT -->
+<div class="ad-slot">Ad Slot (Bottom)</div>
+
 <script>
 const { PDFDocument } = PDFLib;
 let selectedCompany=null;
@@ -264,7 +251,7 @@ document.querySelectorAll('.company').forEach(c=>{
   }
 });
 
-/* PDF PROCESS */
+/* PDF PROCESS – UNTOUCHED TOOL LOGIC */
 document.getElementById('downloadBtn').onclick=async()=>{
   if(!selectedCompany){alert("Select company");return;}
   const file=document.getElementById('pdfFile').files[0];
@@ -282,7 +269,7 @@ document.getElementById('downloadBtn').onclick=async()=>{
     if(slot===0) page=out.addPage([W,H]);
 
     const emb=await out.embedPage(pages[i]);
-    const scale=(H/2)/emb.height; // HEIGHT BASED SCALE
+    const scale=(H/2)/emb.height;
 
     const pos=[
       {x:(W/2-emb.width*scale)/2,y:H/2},
