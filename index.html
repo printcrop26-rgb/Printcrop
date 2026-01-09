@@ -4,165 +4,169 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>printcrop – Free Label Tool</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
-body{background:linear-gradient(180deg,#0b1e2d,#0f2f46);color:#fff; min-height: 100vh;}
-.container{max-width:480px;margin:auto;padding:20px}
+body{background:#f0f4f8;color:#000}
 
-header{background:#fff;color:#000;padding:14px;text-align:center; border-radius: 0 0 20px 20px;}
-h1{color:#1e3a8a;font-size:24px}
+/* Header as per image */
+header{background:#fff; padding:15px; text-align:left; display:flex; align-items:center; gap:10px; border-bottom:1px solid #e5e7eb}
+.logo{color:#1e3a8a; font-size:26px; font-weight:bold}
+.badge{background:#f0f9ff; color:#2da4ff; border:1px solid #2da4ff; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600}
 
-.card{background:#fff;color:#000;border-radius:18px;padding:20px;margin-top:20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3);}
+.container{max-width:480px; margin:auto; padding:15px}
 
-.company{border:2px solid #e5e7eb;border-radius:14px;padding:14px;text-align:center;margin-bottom:10px;cursor:pointer; font-weight: 600; transition: 0.3s;}
-.company.active{border-color:#2da4ff;background:#f0f9ff; color: #2da4ff;}
+/* Main Card Wrapper */
+.card{background:#fff; border-radius:20px; padding:20px; margin-top:10px; box-shadow: 0 4px 12px rgba(0,0,0,0.05)}
 
-.options{display:flex;gap:10px;margin:16px 0}
-.options label{flex: 1; border:2px solid #e5e7eb; padding:12px; text-align: center; border-radius: 999px; cursor:pointer; font-weight: 600;}
+/* Company Buttons */
+.comp-btn{border:2px solid #e5e7eb; border-radius:15px; padding:16px; text-align:center; margin-bottom:12px; cursor:pointer; font-size:18px; font-weight:600; transition:0.2s}
+.comp-btn.active{border-color:#2da4ff; background:#f0f9ff; color:#2da4ff}
 
-/* Sirf Radio button hide karne ke liye */
-input[type="radio"] { display: none; }
-input[type="radio"]:checked + label { border-color:#2da4ff; background:#f0f9ff; color: #2da4ff; }
+.title-sm{font-size:18px; margin:20px 0 15px; font-weight:700}
 
-.upload{border:2px dashed #94a3b8;padding:25px;text-align:center;border-radius:14px;margin-bottom:16px; background: #f8fafc;}
-#pdf { margin-top: 10px; width: 100%; }
+/* Print Type Grid */
+.print-grid{display:flex; gap:12px; margin-bottom:20px}
+.p-box{flex:1; border:2px solid #e5e7eb; padding:15px; border-radius:20px; text-align:center; cursor:pointer; font-weight:600; font-size:15px}
+.p-box.active{border-color:#2da4ff; background:#f0f9ff; color:#2da4ff}
 
-button{
+/* Upload Dotted Area */
+.upload-area{border:2px dashed #94a3b8; border-radius:15px; padding:30px; text-align:center; margin-bottom:20px; background:#fff}
+input[type="file"]{margin-top:10px; width:100%}
+
+/* Blue Gradient Button */
+.main-btn{
   width:100%;
-  background:linear-gradient(135deg,#2563eb,#38bdf8);
+  background:linear-gradient(to right, #3b82f6, #60a5fa);
   color:#fff;
   padding:18px;
   font-size:18px;
-  font-weight: 700;
+  font-weight:700;
   border:none;
-  border-radius:14px;
+  border-radius:15px;
   cursor:pointer;
-  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
 }
-button:active{transform:scale(.97)}
+.main-btn:active{transform:scale(0.98)}
 </style>
 </head>
-
 <body>
 
-<header><h1>printcrop <span style="font-size: 12px; background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 20px; margin-left: 10px;">100% Free</span></h1></header>
+<header>
+    <div class="logo">printcrop</div>
+    <div class="badge">100% Free · No Login</div>
+</header>
 
 <div class="container">
     <div class="card">
-        <h3 style="margin-bottom:15px">Select Company</h3>
-        <div class="company" data-c="Amazon">Amazon</div>
-        <div class="company" data-c="Flipkart">Flipkart</div>
-        <div class="company" data-c="Meesho">Meesho</div>
+        <div class="comp-btn" onclick="setComp(this, 'Amazon')">Amazon</div>
+        <div class="comp-btn" onclick="setComp(this, 'Flipkart')">Flipkart</div>
+        <div class="comp-btn" onclick="setComp(this, 'Meesho')">Meesho</div>
 
-        <h3 style="margin-top:25px">Select Print Type</h3>
-        <div class="options">
-          <input type="radio" id="a4" name="p" checked>
-          <label for="a4">A4 Sheet</label>
-
-          <input type="radio" id="lp" name="p">
-          <label for="lp">Label Printer</label>
+        <div class="title-sm">Select Print Type</div>
+        <div class="print-grid">
+            <div class="p-box active" onclick="setPrint(this, 'A4')">A4<br>Sheet</div>
+            <div class="p-box" onclick="setPrint(this, 'Label')">Label<br>Printer</div>
         </div>
 
-        <div class="upload">
-          <b style="font-size: 18px;">Upload Label PDF</b><br>
-          <input type="file" id="pdf" accept="application/pdf">
+        <div class="upload-area">
+            <b style="font-size:18px">Upload Label PDF</b><br>
+            <input type="file" id="fileInp" accept="application/pdf">
         </div>
 
-        <button id="download">Download Final PDF</button>
+        <button class="main-btn" id="dlBtn">Download Final PDF</button>
     </div>
 </div>
 
 <script>
-// PDF-Lib setup
 const { PDFDocument } = PDFLib;
-let selectedCompany = null;
+let selectedComp = "";
+let printType = "A4";
 
-// Company Selection Logic
-document.querySelectorAll('.company').forEach(c => {
-  c.onclick = () => {
-    document.querySelectorAll('.company').forEach(x => x.classList.remove('active'));
-    c.classList.add('active');
-    selectedCompany = c.dataset.c;
-  }
-});
+function setComp(el, val) {
+    document.querySelectorAll('.comp-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    selectedComp = val;
+}
 
-// Download/Generate Logic
-document.getElementById('download').onclick = async () => {
-  const fileInput = document.getElementById('pdf');
-  
-  // Validation
-  if(!selectedCompany) {
-      alert("Please select a Company (Amazon/Flipkart/Meesho)");
-      return;
-  }
-  if(!fileInput.files[0]) {
-      alert("Please upload a PDF file first");
-      return;
-  }
+function setPrint(el, val) {
+    document.querySelectorAll('.p-box').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    printType = val;
+}
 
-  try {
-      const btn = document.getElementById('download');
-      btn.innerText = "Processing...";
-      btn.disabled = true;
+document.getElementById('dlBtn').onclick = async () => {
+    const file = document.getElementById('fileInp').files[0];
+    if(!selectedComp) return alert("Please select a Company");
+    if(!file) return alert("Please upload a Label PDF");
 
-      const srcBytes = await fileInput.files[0].arrayBuffer();
-      const srcPdf = await PDFDocument.load(srcBytes);
-      const outPdf = await PDFDocument.create();
-      
-      const indices = srcPdf.getPageIndices();
-      const pages = await outPdf.copyPages(srcPdf, indices);
+    const btn = document.getElementById('dlBtn');
+    btn.innerText = "Processing...";
+    btn.disabled = true;
 
-      const W = 595, H = 842; // A4 size
-      let buf = [];
+    try {
+        const arrayBuffer = await file.arrayBuffer();
+        const srcDoc = await PDFDocument.load(arrayBuffer);
+        const outDoc = await PDFDocument.create();
+        
+        const A4_W = 595;
+        const A4_H = 842;
+        const margin = 10; // Margin to prevent cutting
 
-      for (let i = 0; i < pages.length; i++) {
-        buf.push(pages[i]);
-        if (buf.length === 4 || i === pages.length - 1) {
-          const pg = outPdf.addPage([W, H]);
-          const layouts = [[0, H/2], [W/2, H/2], [0, 0], [W/2, 0]];
-          
-          for (let j = 0; j < buf.length; j++) {
-            const pos = layouts[j];
-            const embeddedPage = await outPdf.embedPage(buf[j]);
-            const sc = Math.min((W/2) / buf[j].getWidth(), (H/2) / buf[j].getHeight());
+        const pages = await outDoc.copyPages(srcDoc, srcDoc.getPageIndices());
+
+        // Process in chunks of 4 (4 labels per A4 page)
+        for (let i = 0; i < pages.length; i += 4) {
+            const newPage = outDoc.addPage([A4_W, A4_H]);
             
-            pg.drawPage(embeddedPage, {
-              x: pos[0],
-              y: pos[1],
-              scale: sc
-            });
-          }
-          buf = [];
+            // Define 4 Compartments (X, Y, Width, Height)
+            const slots = [
+                { x: 0, y: A4_H/2, w: A4_W/2, h: A4_H/2 }, // Top Left
+                { x: A4_W/2, y: A4_H/2, w: A4_W/2, h: A4_H/2 }, // Top Right
+                { x: 0, y: 0, w: A4_W/2, h: A4_H/2 }, // Bottom Left
+                { x: A4_W/2, y: 0, w: A4_W/2, h: A4_H/2 }  // Bottom Right
+            ];
+
+            for (let j = 0; j < 4; j++) {
+                if (pages[i + j]) {
+                    const labelPage = pages[i + j];
+                    const embedded = await outDoc.embedPage(labelPage);
+                    const { width, height } = labelPage.getSize();
+                    const slot = slots[j];
+
+                    // Calculate scaling to fit in compartment without cutting
+                    const scale = Math.min((slot.w - margin*2) / width, (slot.h - margin*2) / height);
+                    
+                    // Center the label inside its compartment
+                    const centeredX = slot.x + (slot.w - width * scale) / 2;
+                    const centeredY = slot.y + (slot.h - height * scale) / 2;
+
+                    newPage.drawPage(embedded, {
+                        x: centeredX,
+                        y: centeredY,
+                        scale: scale
+                    });
+                }
+            }
         }
-      }
 
-      const pdfBytes = await outPdf.save();
-      const blob = new Blob([pdfBytes], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-
-      // Fixed Download Method for Mobile/Web
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `PrintCrop_${selectedCompany}_Label.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      // Cleanup
-      setTimeout(() => URL.revokeObjectURL(url), 5000);
-      btn.innerText = "Download Final PDF";
-      btn.disabled = false;
-
-  } catch (error) {
-      console.error(error);
-      alert("Error processing PDF: " + error.message);
-      document.getElementById('download').innerText = "Download Final PDF";
-      document.getElementById('download').disabled = false;
-  }
+        const pdfBytes = await outDoc.save();
+        const blob = new Blob([pdfBytes], { type: "application/pdf" });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `PrintCrop_${selectedComp}_Label.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+    } catch (err) {
+        alert("Error: " + err.message);
+    } finally {
+        btn.innerText = "Download Final PDF";
+        btn.disabled = false;
+    }
 };
 </script>
 
