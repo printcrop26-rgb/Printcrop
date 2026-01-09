@@ -6,28 +6,81 @@
 <title>printcrop – Free Label Tool</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+<script src="https://unpkg.com/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
 body{background:linear-gradient(180deg,#0b1e2d,#0f2f46);color:#fff;min-height:100vh}
 .container{max-width:480px;margin:auto;padding:20px}
 
-header{background:#fff;color:#000;padding:14px;text-align:center;border-radius:0 0 20px 20px}
+header{
+  background:#fff;color:#000;
+  padding:14px;text-align:center;
+  border-radius:0 0 20px 20px
+}
 h1{color:#1e3a8a;font-size:24px}
 
-.card{background:#fff;color:#000;border-radius:18px;padding:20px;margin-top:20px;box-shadow:0 10px 25px rgba(0,0,0,.3)}
+.card{
+  background:#fff;color:#000;
+  border-radius:18px;
+  padding:20px;
+  margin-top:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,.3)
+}
 
-.company{border:2px solid #e5e7eb;border-radius:14px;padding:14px;text-align:center;margin-bottom:10px;cursor:pointer;font-weight:600}
-.company.active{border-color:#2da4ff;background:#f0f9ff;color:#2da4ff}
+.company{
+  border:2px solid #e5e7eb;
+  border-radius:14px;
+  padding:14px;
+  text-align:center;
+  margin-bottom:10px;
+  cursor:pointer;
+  font-weight:600;
+  transition:.3s
+}
+.company.active{
+  border-color:#2da4ff;
+  background:#f0f9ff;
+  color:#2da4ff
+}
 
 .options{display:flex;gap:10px;margin:16px 0}
-.options label{flex:1;border:2px solid #e5e7eb;padding:12px;text-align:center;border-radius:999px;cursor:pointer;font-weight:600}
-input[type=radio]{display:none}
-input[type=radio]:checked+label{border-color:#2da4ff;background:#f0f9ff;color:#2da4ff}
+.options label{
+  flex:1;
+  border:2px solid #e5e7eb;
+  padding:12px;
+  text-align:center;
+  border-radius:999px;
+  cursor:pointer;
+  font-weight:600
+}
+input[type="radio"]{display:none}
+input[type="radio"]:checked+label{
+  border-color:#2da4ff;
+  background:#f0f9ff;
+  color:#2da4ff
+}
 
-.upload{border:2px dashed #94a3b8;padding:25px;text-align:center;border-radius:14px;margin-bottom:16px;background:#f8fafc}
-button{width:100%;background:linear-gradient(135deg,#2563eb,#38bdf8);color:#fff;padding:18px;font-size:18px;font-weight:700;border:none;border-radius:14px;cursor:pointer}
+.upload{
+  border:2px dashed #94a3b8;
+  padding:25px;
+  text-align:center;
+  border-radius:14px;
+  margin-bottom:16px;
+  background:#f8fafc
+}
+
+button{
+  width:100%;
+  background:linear-gradient(135deg,#2563eb,#38bdf8);
+  color:#fff;
+  padding:18px;
+  font-size:18px;
+  font-weight:700;
+  border:none;
+  border-radius:14px;
+  cursor:pointer
+}
 button:active{transform:scale(.97)}
 </style>
 </head>
@@ -46,7 +99,7 @@ button:active{transform:scale(.97)}
 <div class="company" data-c="Flipkart">Flipkart</div>
 <div class="company" data-c="Meesho">Meesho</div>
 
-<h3 style="margin-top:20px">Select Print Type</h3>
+<h3 style="margin-top:22px">Select Print Type</h3>
 <div class="options">
 <input type="radio" id="a4" name="p" checked>
 <label for="a4">A4 Sheet</label>
@@ -56,7 +109,7 @@ button:active{transform:scale(.97)}
 </div>
 
 <div class="upload">
-<b>Upload Label PDF</b><br><br>
+<b style="font-size:18px">Upload Label PDF</b><br>
 <input type="file" id="pdf" accept="application/pdf">
 </div>
 
@@ -78,48 +131,47 @@ document.querySelectorAll('.company').forEach(c=>{
   }
 });
 
-/* FINAL PRINT LOGIC */
+/* FINAL PDF LOGIC */
 document.getElementById('download').onclick = async ()=>{
-  if(!selectedCompany) return alert("Select Company");
-  const file=document.getElementById('pdf').files[0];
-  if(!file) return alert("Upload PDF");
+  const file = document.getElementById('pdf').files[0];
+  if(!selectedCompany){alert("Select company");return;}
+  if(!file){alert("Upload PDF");return;}
 
-  const btn=document.getElementById('download');
-  btn.innerText="Processing...";
-  btn.disabled=true;
+  const srcBytes = await file.arrayBuffer();
+  const srcPdf = await PDFDocument.load(srcBytes);
+  const outPdf = await PDFDocument.create();
 
-  const srcBytes=await file.arrayBuffer();
-  const srcPdf=await PDFDocument.load(srcBytes);
-  const outPdf=await PDFDocument.create();
+  const pages = srcPdf.getPages();
+  const W = 595, H = 842; // A4
 
-  const pages=srcPdf.getPages();
-  const A4_W=595, A4_H=842;
-
-  let slot=0;
+  let slot = 0;
   let page;
 
-  const positions=[
-    {x:0,y:A4_H/2},
-    {x:A4_W/2,y:A4_H/2},
-    {x:0,y:0},
-    {x:A4_W/2,y:0}
-  ];
-
   for(let i=0;i<pages.length;i++){
+
     if(slot===0){
-      page=outPdf.addPage([A4_W,A4_H]);
+      page = outPdf.addPage([W,H]);
     }
 
-    const embedded=await outPdf.embedPage(pages[i]);
+    const embedded = await outPdf.embedPage(pages[i]);
 
-    const scale=Math.min(
-      (A4_W/2)/embedded.width,
-      (A4_H/2)/embedded.height
-    );
+    /* 🔥 FINAL HEIGHT BASED SCALE (ONLY FIX) */
+    const targetH = H/2;
+    const scale = targetH / embedded.height;
+
+    const pos = [
+      {x:0,y:H/2},
+      {x:W/2,y:H/2},
+      {x:0,y:0},
+      {x:W/2,y:0}
+    ][slot];
+
+    const drawX = pos.x + ((W/2) - embedded.width*scale)/2;
+    const drawY = pos.y + ((H/2) - embedded.height*scale)/2;
 
     page.drawPage(embedded,{
-      x:positions[slot].x + ((A4_W/2 - embedded.width*scale)/2),
-      y:positions[slot].y + ((A4_H/2 - embedded.height*scale)/2),
+      x:drawX,
+      y:drawY,
       xScale:scale,
       yScale:scale
     });
@@ -128,17 +180,12 @@ document.getElementById('download').onclick = async ()=>{
     if(slot===4) slot=0;
   }
 
-  const bytes=await outPdf.save();
-  const blob=new Blob([bytes],{type:"application/pdf"});
-  const link=document.createElement("a");
-  link.href=URL.createObjectURL(blob);
-  link.download=`printcrop_${selectedCompany}_A4.pdf`;
-  document.body.appendChild(link);
+  const bytes = await outPdf.save();
+  const blob = new Blob([bytes],{type:"application/pdf"});
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `PrintCrop_${selectedCompany}_A4.pdf`;
   link.click();
-  document.body.removeChild(link);
-
-  btn.innerText="Download Final PDF";
-  btn.disabled=false;
 };
 </script>
 
