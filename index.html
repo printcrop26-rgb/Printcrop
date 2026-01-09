@@ -1,158 +1,242 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>PrintCrop – Free Label Tool</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quick Label Crop – 100% Free | No Login</title>  <!-- ==========================
+       GLOBAL SEO + META
+  =========================== -->  <meta name="description" content="100% Free Amazon Flipkart Meesho Label Crop Tool. Auto-fit A4 labels, no login, instant PDF download." />
+  <meta name="keywords" content="label crop, meesho label, flipkart label, amazon label, a4 label print" />  <!-- ==========================
+       GOOGLE FONT
+  =========================== -->  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">  <!-- ==========================
+       CSS RESET + VARIABLES
+  =========================== -->  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
 
-<!-- PDF-LIB -->
-<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
-
-<style>
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,BlinkMacSystemFont;
-  background:linear-gradient(180deg,#0b132b,#1c2541);
-  color:#fff;
-}
-.container{
-  max-width:420px;
-  margin:auto;
-  padding:20px;
-}
-h1{
-  text-align:center;
-  margin-bottom:5px;
-}
-.badge{
-  text-align:center;
-  color:#00ff99;
-  font-weight:600;
-  margin-bottom:20px;
-}
-.card{
-  background:#111827;
-  border-radius:14px;
-  padding:18px;
-  margin-bottom:18px;
-  box-shadow:0 10px 30px rgba(0,0,0,.4);
-}
-label{font-weight:600}
-.option{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin:10px 0;
-}
-button{
-  width:100%;
-  padding:14px;
-  font-size:16px;
-  font-weight:700;
-  border:none;
-  border-radius:10px;
-  background:#38bdf8;
-  color:#000;
-  cursor:pointer;
-}
-button:active{transform:scale(.98)}
-.footer{
-  text-align:center;
-  font-size:13px;
-  opacity:.7;
-}
-</style>
-</head>
-
-<body>
-<div class="container">
-
-<h1>PrintCrop</h1>
-<div class="badge">100% Free • No Login</div>
-
-<div class="card">
-  <label>Select Company</label>
-  <div class="option"><input type="radio" name="company" value="meesho"> Meesho</div>
-  <div class="option"><input type="radio" name="company" value="amazon"> Amazon</div>
-  <div class="option"><input type="radio" name="company" value="flipkart"> Flipkart</div>
-</div>
-
-<div class="card">
-  <label>Print Mode</label>
-  <div class="option"><input type="radio" name="mode" value="a4" checked> A4 (Auto Layout)</div>
-  <div class="option"><input type="radio" name="mode" value="thermal"> Thermal 4×6</div>
-</div>
-
-<div class="card">
-  <label>Upload Label PDF</label><br><br>
-  <input type="file" id="fileInput" accept="application/pdf">
-</div>
-
-<button onclick="generatePDF()">Download Cropped PDF</button>
-
-<div class="footer"><br>Ads-Ready • Professional Output</div>
-
-</div>
-
-<script>
-async function generatePDF(){
-  const file = document.getElementById('fileInput').files[0];
-  if(!file){ alert("Upload PDF"); return; }
-
-  const company = document.querySelector('input[name="company"]:checked');
-  if(!company){ alert("Select company"); return; }
-
-  const mode = document.querySelector('input[name="mode"]:checked').value;
-
-  const bytes = await file.arrayBuffer();
-  const srcPdf = await PDFLib.PDFDocument.load(bytes);
-  const pages = srcPdf.getPages();
-
-  const outPdf = await PDFLib.PDFDocument.create();
-
-  const A4_W = 595.28;
-  const A4_H = 841.89;
-
-  let perPage = mode==="thermal" ? 1 : 4;
-
-  for(let i=0;i<pages.length;i+=perPage){
-    const page = outPdf.addPage([A4_W,A4_H]);
-
-    const slice = pages.slice(i,i+perPage);
-
-    let rows=1, cols=1;
-    if(slice.length===2){rows=1;cols=2;}
-    if(slice.length>=3){rows=2;cols=2;}
-
-    const cellW = A4_W/cols;
-    const cellH = A4_H/rows;
-
-    for(let j=0;j<slice.length;j++){
-      const src = slice[j];
-      const embed = await outPdf.embedPage(src);
-
-      const scale = Math.min(
-        cellW/embed.width,
-        cellH/embed.height
-      );
-
-      const col = j%cols;
-      const row = Math.floor(j/cols);
-
-      const x = col*cellW + (cellW - embed.width*scale)/2;
-      const y = A4_H - (row+1)*cellH + (cellH - embed.height*scale)/2;
-
-      page.drawPage(embed,{x,y,scale});
+    :root {
+      --bg-dark:#0b1e2d;
+      --bg-light:#ffffff;
+      --primary:#2da4ff;
+      --accent:#ffd84d;
+      --text-dark:#0f172a;
+      --text-light:#ffffff;
+      --card:#ffffff;
+      --border:#e5e7eb;
     }
-  }
 
-  const out = await outPdf.save();
-  const blob = new Blob([out],{type:"application/pdf"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "PrintCrop_Output.pdf";
-  a.click();
-}
-</script>
-</body>
+    body {
+      background:linear-gradient(180deg,#0b1e2d,#0f2f46);
+      color:var(--text-light);
+      overflow-x:hidden;
+    }
+
+    section { padding:80px 16px; }
+    .container { max-width:1200px; margin:auto; }
+
+    /* ==========================
+       HEADER
+    =========================== */
+    header {
+      position:sticky;
+      top:0;
+      z-index:100;
+      background:#ffffff;
+      color:#000;
+      padding:16px 24px;
+      box-shadow:0 2px 12px rgba(0,0,0,.08);
+    }
+
+    header .top {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    header h1 {
+      font-size:28px;
+      color:#1e3a8a;
+      font-weight:700;
+    }
+
+    header .badge {
+      background:#e0f2fe;
+      color:#0369a1;
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:14px;
+      margin-left:12px;
+    }
+
+    /* ==========================
+       HERO
+    =========================== */
+    .hero {
+      text-align:center;
+    }
+
+    .hero h2 {
+      font-size:42px;
+      font-weight:700;
+      margin-bottom:20px;
+    }
+
+    .hero p {
+      font-size:18px;
+      max-width:700px;
+      margin:auto;
+      opacity:.9;
+    }
+
+    /* ==========================
+       BENEFITS
+    =========================== */
+    .benefits {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:24px;
+      margin-top:60px;
+    }
+
+    .benefit {
+      background:rgba(255,255,255,.08);
+      border-radius:16px;
+      padding:24px;
+      text-align:center;
+    }
+
+    .benefit h4 { margin-bottom:10px; font-size:18px; }
+
+    /* ==========================
+       TOOL CARD
+    =========================== */
+    .tool {
+      background:#ffffff;
+      color:#000;
+      border-radius:20px;
+      padding:32px;
+      box-shadow:0 20px 60px rgba(0,0,0,.2);
+    }
+
+    .tool h3 { margin-bottom:24px; }
+
+    .companies {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:16px;
+    }
+
+    .company {
+      border:2px solid var(--border);
+      border-radius:14px;
+      padding:18px;
+      text-align:center;
+      cursor:pointer;
+    }
+
+    .company.active { border-color:var(--primary); background:#f0f9ff; }
+
+    .options {
+      margin:24px 0;
+      display:flex;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+
+    .options label {
+      border:2px solid var(--border);
+      padding:14px 20px;
+      border-radius:999px;
+      cursor:pointer;
+    }
+
+    .options input { display:none; }
+    .options input:checked + label { border-color:var(--primary); background:#f0f9ff; }
+
+    .upload {
+      border:2px dashed #94a3b8;
+      padding:40px;
+      text-align:center;
+      border-radius:16px;
+      margin-bottom:24px;
+    }
+
+    .upload input { margin-top:16px; }
+
+    .download {
+      width:100%;
+      background:linear-gradient(135deg,#2563eb,#38bdf8);
+      color:#fff;
+      padding:18px;
+      font-size:18px;
+      border:none;
+      border-radius:16px;
+      cursor:pointer;
+    }
+
+    /* ==========================
+       ADS PLACEHOLDER
+    =========================== */
+    .ad {
+      height:120px;
+      border:2px dashed rgba(255,255,255,.3);
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      opacity:.6;
+    }
+
+    footer {
+      padding:40px;
+      text-align:center;
+      opacity:.6;
+    }
+  </style></head>
+<body><header>
+  <div class="top">
+    <div>
+      <h1>Quick Label Crop <span class="badge">100% Free · No Login</span></h1>
+    </div>
+  </div>
+</header><section class="hero">
+  <div class="container">
+    <h2>Smart Label Cropping for Amazon · Flipkart · Meesho</h2>
+    <p>Auto-fit labels on A4 or Thermal printer. No resize issues. Direct PDF download.</p><div class="benefits">
+  <div class="benefit"><h4>Perfect A4 Fit</h4><p>Equal size labels always</p></div>
+  <div class="benefit"><h4>No Login</h4><p>100% privacy safe</p></div>
+  <div class="benefit"><h4>Auto Next Page</h4><p>4 labels per page logic</p></div>
+  <div class="benefit"><h4>Instant Download</h4><p>No print popup</p></div>
+</div>
+
+  </div>
+</section><section>
+  <div class="container tool">
+    <h3>Select Company</h3>
+    <div class="companies">
+      <div class="company">Amazon</div>
+      <div class="company">Flipkart</div>
+      <div class="company">Meesho</div>
+    </div><h3 style="margin-top:32px">Select Print Type</h3>
+<div class="options">
+  <input type="radio" id="a4" name="print" checked>
+  <label for="a4">A4 Sheet</label>
+
+  <input type="radio" id="thermal" name="print">
+  <label for="thermal">Label Printer</label>
+</div>
+
+<div class="upload">
+  <h3>Upload Label PDF</h3>
+  <input type="file" accept="application/pdf" />
+</div>
+
+<button class="download">Download Final PDF</button>
+
+  </div>
+</section><section>
+  <div class="container">
+    <div class="ad">Future Google AdSense Slot</div>
+  </div>
+</section><footer>
+  ©️ 2026 Quick Label Crop · Built for sellers
+</footer></body>
 </html>
