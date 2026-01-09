@@ -11,18 +11,33 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
 body{background:linear-gradient(180deg,#0b1e2d,#0f2f46);color:#fff;min-height:100vh}
-header{background:#fff;color:#000;padding:14px;text-align:center}
-h1{color:#1e3a8a;font-size:24px}
 .container{max-width:480px;margin:auto;padding:20px}
-.card{background:#fff;color:#000;border-radius:18px;padding:20px;margin-top:20px}
-.company{border:2px solid #e5e7eb;border-radius:14px;padding:14px;text-align:center;margin-bottom:10px;cursor:pointer;font-weight:600}
+
+header{background:#fff;color:#000;padding:14px;text-align:center;border-radius:0 0 20px 20px}
+h1{color:#1e3a8a;font-size:24px}
+
+.card{background:#fff;color:#000;border-radius:18px;padding:20px;margin-top:20px;
+box-shadow:0 10px 25px rgba(0,0,0,.3)}
+
+.company{border:2px solid #e5e7eb;border-radius:14px;padding:14px;
+text-align:center;margin-bottom:10px;cursor:pointer;font-weight:600}
 .company.active{border-color:#2da4ff;background:#f0f9ff;color:#2da4ff}
+
 .options{display:flex;gap:10px;margin:16px 0}
-.options label{flex:1;border:2px solid #e5e7eb;padding:12px;text-align:center;border-radius:999px;cursor:pointer;font-weight:600}
+.options label{flex:1;border:2px solid #e5e7eb;padding:12px;text-align:center;
+border-radius:999px;cursor:pointer;font-weight:600}
 input[type="radio"]{display:none}
 input[type="radio"]:checked+label{border-color:#2da4ff;background:#f0f9ff;color:#2da4ff}
-.upload{border:2px dashed #94a3b8;padding:25px;text-align:center;border-radius:14px;margin-bottom:16px}
-button{width:100%;background:linear-gradient(135deg,#2563eb,#38bdf8);color:#fff;padding:18px;font-size:18px;font-weight:700;border:none;border-radius:14px;cursor:pointer}
+
+.upload{border:2px dashed #94a3b8;padding:25px;text-align:center;
+border-radius:14px;margin-bottom:16px;background:#f8fafc}
+#pdf{margin-top:10px;width:100%}
+
+button{
+width:100%;
+background:linear-gradient(135deg,#2563eb,#38bdf8);
+color:#fff;padding:18px;font-size:18px;font-weight:700;
+border:none;border-radius:14px;cursor:pointer}
 button:active{transform:scale(.97)}
 </style>
 </head>
@@ -30,32 +45,33 @@ button:active{transform:scale(.97)}
 <body>
 
 <header>
-<h1>printcrop <span style="font-size:12px;background:#dcfce7;color:#166534;padding:4px 8px;border-radius:20px">100% Free</span></h1>
+<h1>printcrop <span style="font-size:12px;background:#dcfce7;color:#166534;
+padding:4px 8px;border-radius:20px;margin-left:8px">100% Free</span></h1>
 </header>
 
 <div class="container">
 <div class="card">
 
 <h3>Select Company</h3>
-<div class="company" data-company="Amazon">Amazon</div>
-<div class="company" data-company="Flipkart">Flipkart</div>
-<div class="company" data-company="Meesho">Meesho</div>
+<div class="company" data-c="Amazon">Amazon</div>
+<div class="company" data-c="Flipkart">Flipkart</div>
+<div class="company" data-c="Meesho">Meesho</div>
 
-<h3 style="margin-top:20px">Select Print Type</h3>
+<h3 style="margin-top:25px">Select Print Type</h3>
 <div class="options">
-<input type="radio" id="a4" name="print" checked>
+<input type="radio" id="a4" name="p" checked>
 <label for="a4">A4 Sheet</label>
 
-<input type="radio" id="lp" name="print">
+<input type="radio" id="lp" name="p">
 <label for="lp">Label Printer</label>
 </div>
 
 <div class="upload">
-<b>Upload Label PDF</b><br><br>
-<input type="file" id="pdfFile" accept="application/pdf">
+<b style="font-size:18px">Upload Label PDF</b><br>
+<input type="file" id="pdf" accept="application/pdf">
 </div>
 
-<button id="downloadBtn">Download Final PDF</button>
+<button id="download">Download Final PDF</button>
 
 </div>
 </div>
@@ -64,79 +80,87 @@ button:active{transform:scale(.97)}
 const { PDFDocument } = PDFLib;
 let selectedCompany = null;
 
+/* Company select */
 document.querySelectorAll('.company').forEach(c=>{
-  c.onclick=()=>{
-    document.querySelectorAll('.company').forEach(x=>x.classList.remove('active'));
-    c.classList.add('active');
-    selectedCompany=c.dataset.company;
-  }
+c.onclick=()=>{
+document.querySelectorAll('.company').forEach(x=>x.classList.remove('active'));
+c.classList.add('active');
+selectedCompany=c.dataset.c;
+};
 });
 
-document.getElementById('downloadBtn').onclick = async ()=>{
-  if(!selectedCompany){ alert("Select company"); return; }
-  const file=document.getElementById('pdfFile').files[0];
-  if(!file){ alert("Upload PDF"); return; }
+/* MAIN LOGIC */
+document.getElementById('download').onclick = async () => {
 
-  const btn=document.getElementById('downloadBtn');
-  btn.innerText="Processing...";
-  btn.disabled=true;
+if(!selectedCompany){alert("Select company");return;}
+const file=document.getElementById('pdf').files[0];
+if(!file){alert("Upload PDF");return;}
 
-  const srcBytes=await file.arrayBuffer();
-  const srcPdf=await PDFDocument.load(srcBytes);
-  const outPdf=await PDFDocument.create();
+const btn=document.getElementById('download');
+btn.innerText="Processing...";
+btn.disabled=true;
 
-  const isA4=document.getElementById('a4').checked;
-  const srcPages=srcPdf.getPages();
+const srcBytes=await file.arrayBuffer();
+const srcPdf=await PDFDocument.load(srcBytes);
+const outPdf=await PDFDocument.create();
 
-  if(isA4){
-    // ✅ A4 = 4 labels per page
-    const A4_W=595, A4_H=842;
-    const slots=[
-      {x:0,y:A4_H/2},{x:A4_W/2,y:A4_H/2},
-      {x:0,y:0},{x:A4_W/2,y:0}
-    ];
+const pages=srcPdf.getPageIndices();
+const copied=await outPdf.copyPages(srcPdf,pages);
 
-    let buf=[];
-    for(let i=0;i<srcPages.length;i++){
-      buf.push(srcPages[i]);
-      if(buf.length===4 || i===srcPages.length-1){
-        const page=outPdf.addPage([A4_W,A4_H]);
-        for(let j=0;j<buf.length;j++){
-          const emb=await outPdf.embedPage(buf[j]);
-          const scale=Math.min(
-            (A4_W/2)/emb.width,
-            (A4_H/2)/emb.height
-          );
-          const x=slots[j].x+(A4_W/2-emb.width*scale)/2;
-          const y=slots[j].y+(A4_H/2-emb.height*scale)/2;
-          page.drawPage(emb,{x,y,scale});
-        }
-        buf=[];
-      }
-    }
-  } else {
-    // ✅ Label Printer = 1 label per page
-    for(const p of srcPages){
-      const emb=await outPdf.embedPage(p);
-      const page=outPdf.addPage([emb.width,emb.height]);
-      page.drawPage(emb,{x:0,y:0,scale:1});
-    }
-  }
+const W=595, H=842; // A4
+const slots=[
+[0,H/2],[W/2,H/2],
+[0,0],[W/2,0]
+];
 
-  const bytes=await outPdf.save();
-  const blob=new Blob([bytes],{type:"application/pdf"});
-  const url=URL.createObjectURL(blob);
+let buffer=[];
 
-  const a=document.createElement("a");
-  a.href=url;
-  a.download=`printcrop_${selectedCompany}.pdf`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(()=>URL.revokeObjectURL(url),5000);
+for(let i=0;i<copied.length;i++){
+buffer.push(copied[i]);
 
-  btn.innerText="Download Final PDF";
-  btn.disabled=false;
+if(buffer.length===4 || i===copied.length-1){
+
+const pg=outPdf.addPage([W,H]);
+
+for(let j=0;j<buffer.length;j++){
+const embedded=await outPdf.embedPage(buffer[j]);
+
+const targetW=W/2;
+const targetH=H/2;
+
+const pageW=embedded.width;
+const pageH=embedded.height;
+
+/* 🔥 FINAL FIX — CORRECT SCALE */
+const scale=Math.min(
+targetW/pageW,
+targetH/pageH
+);
+
+/* CENTER ALIGN */
+const x=slots[j][0]+(targetW-pageW*scale)/2;
+const y=slots[j][1]+(targetH-pageH*scale)/2;
+
+pg.drawPage(embedded,{x,y,scale});
+}
+buffer=[];
+}
+}
+
+const bytes=await outPdf.save();
+const blob=new Blob([bytes],{type:"application/pdf"});
+const url=URL.createObjectURL(blob);
+
+const a=document.createElement("a");
+a.href=url;
+a.download=`printcrop_${selectedCompany}_A4.pdf`;
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+URL.revokeObjectURL(url);
+
+btn.innerText="Download Final PDF";
+btn.disabled=false;
 };
 </script>
 
