@@ -1,15 +1,16 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quick Label Crop – 100% Free | No Login</title>  <!-- ==========================
-       GLOBAL SEO + META
-  =========================== -->  <meta name="description" content="100% Free Amazon Flipkart Meesho Label Crop Tool. Auto-fit A4 labels, no login, instant PDF download." />
-  <meta name="keywords" content="label crop, meesho label, flipkart label, amazon label, a4 label print" />  <!-- ==========================
-       GOOGLE FONT
-  =========================== -->  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">  <!-- ==========================
-       CSS RESET + VARIABLES
-  =========================== -->  <style>
+  <title>Quick Label Crop – 100% Free | No Login</title>
+
+  <meta name="description" content="100% Free Amazon Flipkart Meesho Label Crop Tool. Auto-fit A4 labels, no login, instant PDF download." />
+  <meta name="keywords" content="label crop, meesho label, flipkart label, amazon label, a4 label print" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
 
     :root {
@@ -32,9 +33,6 @@
     section { padding:80px 16px; }
     .container { max-width:1200px; margin:auto; }
 
-    /* ==========================
-       HEADER
-    =========================== */
     header {
       position:sticky;
       top:0;
@@ -66,12 +64,7 @@
       margin-left:12px;
     }
 
-    /* ==========================
-       HERO
-    =========================== */
-    .hero {
-      text-align:center;
-    }
+    .hero { text-align:center; }
 
     .hero h2 {
       font-size:42px;
@@ -86,9 +79,6 @@
       opacity:.9;
     }
 
-    /* ==========================
-       BENEFITS
-    =========================== */
     .benefits {
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
@@ -105,9 +95,6 @@
 
     .benefit h4 { margin-bottom:10px; font-size:18px; }
 
-    /* ==========================
-       TOOL CARD
-    =========================== */
     .tool {
       background:#ffffff;
       color:#000;
@@ -130,9 +117,14 @@
       padding:18px;
       text-align:center;
       cursor:pointer;
+      user-select:none;
     }
 
-    .company.active { border-color:var(--primary); background:#f0f9ff; }
+    .company.active {
+      border-color:var(--primary);
+      background:#f0f9ff;
+      font-weight:600;
+    }
 
     .options {
       margin:24px 0;
@@ -149,7 +141,10 @@
     }
 
     .options input { display:none; }
-    .options input:checked + label { border-color:var(--primary); background:#f0f9ff; }
+    .options input:checked + label {
+      border-color:var(--primary);
+      background:#f0f9ff;
+    }
 
     .upload {
       border:2px dashed #94a3b8;
@@ -172,9 +167,6 @@
       cursor:pointer;
     }
 
-    /* ==========================
-       ADS PLACEHOLDER
-    =========================== */
     .ad {
       height:120px;
       border:2px dashed rgba(255,255,255,.3);
@@ -190,53 +182,105 @@
       text-align:center;
       opacity:.6;
     }
-  </style></head>
-<body><header>
+  </style>
+</head>
+
+<body>
+
+<header>
   <div class="top">
-    <div>
-      <h1>Quick Label Crop <span class="badge">100% Free · No Login</span></h1>
-    </div>
+    <h1>Quick Label Crop <span class="badge">100% Free · No Login</span></h1>
   </div>
-</header><section class="hero">
+</header>
+
+<section class="hero">
   <div class="container">
     <h2>Smart Label Cropping for Amazon · Flipkart · Meesho</h2>
-    <p>Auto-fit labels on A4 or Thermal printer. No resize issues. Direct PDF download.</p><div class="benefits">
-  <div class="benefit"><h4>Perfect A4 Fit</h4><p>Equal size labels always</p></div>
-  <div class="benefit"><h4>No Login</h4><p>100% privacy safe</p></div>
-  <div class="benefit"><h4>Auto Next Page</h4><p>4 labels per page logic</p></div>
-  <div class="benefit"><h4>Instant Download</h4><p>No print popup</p></div>
-</div>
+    <p>Auto-fit labels on A4 or Thermal printer. No resize issues. Direct PDF download.</p>
 
+    <div class="benefits">
+      <div class="benefit"><h4>Perfect A4 Fit</h4><p>Equal size labels always</p></div>
+      <div class="benefit"><h4>No Login</h4><p>100% privacy safe</p></div>
+      <div class="benefit"><h4>Auto Next Page</h4><p>4 labels per page logic</p></div>
+      <div class="benefit"><h4>Instant Download</h4><p>No print popup</p></div>
+    </div>
   </div>
-</section><section>
+</section>
+
+<section>
   <div class="container tool">
     <h3>Select Company</h3>
+
     <div class="companies">
-      <div class="company">Amazon</div>
-      <div class="company">Flipkart</div>
-      <div class="company">Meesho</div>
-    </div><h3 style="margin-top:32px">Select Print Type</h3>
-<div class="options">
-  <input type="radio" id="a4" name="print" checked>
-  <label for="a4">A4 Sheet</label>
+      <div class="company" data-company="Amazon">Amazon</div>
+      <div class="company" data-company="Flipkart">Flipkart</div>
+      <div class="company" data-company="Meesho">Meesho</div>
+    </div>
 
-  <input type="radio" id="thermal" name="print">
-  <label for="thermal">Label Printer</label>
-</div>
+    <h3 style="margin-top:32px">Select Print Type</h3>
 
-<div class="upload">
-  <h3>Upload Label PDF</h3>
-  <input type="file" accept="application/pdf" />
-</div>
+    <div class="options">
+      <input type="radio" id="a4" name="print" checked>
+      <label for="a4">A4 Sheet</label>
 
-<button class="download">Download Final PDF</button>
+      <input type="radio" id="thermal" name="print">
+      <label for="thermal">Label Printer</label>
+    </div>
 
+    <div class="upload">
+      <h3>Upload Label PDF</h3>
+      <input type="file" id="pdfFile" accept="application/pdf" />
+    </div>
+
+    <button class="download" id="downloadBtn">Download Final PDF</button>
   </div>
-</section><section>
+</section>
+
+<section>
   <div class="container">
     <div class="ad">Future Google AdSense Slot</div>
   </div>
-</section><footer>
+</section>
+
+<footer>
   ©️ 2026 Quick Label Crop · Built for sellers
-</footer></body>
+</footer>
+
+<!-- ==========================
+     FIXED JAVASCRIPT (ONLY ADDITION)
+=========================== -->
+<script>
+  let selectedCompany = null;
+
+  const companies = document.querySelectorAll('.company');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const pdfInput = document.getElementById('pdfFile');
+
+  companies.forEach(company => {
+    company.addEventListener('click', () => {
+      companies.forEach(c => c.classList.remove('active'));
+      company.classList.add('active');
+      selectedCompany = company.dataset.company;
+    });
+  });
+
+  downloadBtn.addEventListener('click', () => {
+    if (!selectedCompany) {
+      alert('Please select a company first');
+      return;
+    }
+
+    if (!pdfInput.files.length) {
+      alert('Please upload a PDF file');
+      return;
+    }
+
+    alert(
+      'Company: ' + selectedCompany +
+      '\nPDF uploaded successfully.\n\nFinal A4 label engine will process next.'
+    );
+  });
+</script>
+
+</body>
 </html>
